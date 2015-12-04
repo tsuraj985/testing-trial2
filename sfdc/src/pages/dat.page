@@ -1,0 +1,22 @@
+<apex:page Controller="myclass">
+<apex:pageBlock >
+   <table border="0" >
+          <tr>
+             <th>Name</th>
+             <th>Phone</th>
+              <th>fax</th>
+              <th>site</th>
+          </tr>
+         <apex:repeat var="a" value="{!acc}">
+         <tr>
+
+               <td><apex:outputtext value="{!a.Name}"/></td>
+             <td><apex:outputtext value="{!a.Phone}"/></td>
+            <td><apex:outputtext value="{!a.Fax}"/></td>
+               <td><apex:outputtext value="{!a.Site}"/></td>
+
+            </tr>
+         </apex:repeat>
+    </table>
+    </apex:pageBlock>
+ </apex:page>

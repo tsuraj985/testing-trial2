@@ -1,0 +1,322 @@
+<apex:page id="chartpage" controller="ChartExt_Cls" showHeader="false" sidebar="false">
+<style>
+    body{
+        background-color: #f8f8f8 !important;"
+    }
+</style>
+<apex:pageMessages />
+    <!-- apex:stylesheet value="{!$Resource.ExtJS4}/extjs-4.1.0/resources/css/ext-all.css" />
+    <apex:includeScript value="{!$Resource.ExtJS4}/extjs-4.1.0/ext-all.js" / -->
+    <style>
+        div [id$="chartPanel"]{
+             text-align: center;    
+        }
+        
+    </style>
+    <apex:stylesheet value="{!$Resource.EXTJS4_Resource}/extjs-docs-4.2.2/extjs-build/resources/css/ext-all.css" />
+    <apex:includeScript value="{!$Resource.EXTJS4_Resource}/extjs-docs-4.2.2/extjs-build/ext-all.js"/> 
+    <apex:outputPanel id="mainId">
+        <!--  <div id="tooltipDiv" onmouseover="changeTitle()">-->
+        <div>
+      <apex:outputPanel layout="block" id="chartPanel" rendered="{!NOT(ISBLANK(recordjson))}"> 
+    <script>
+   Ext.onReady(function () {
+  
+   if('{!chartType}' == 'Pie') {
+       
+        var store = Ext.create('Ext.data.JsonStore', {
+            fields: ['name', 'data'],
+            data: {!recordjson}
+        });
+        var donut = false;
+        var chart = Ext.create('Ext.chart.Chart', {
+            xtype: 'chart',
+            width: 430,
+            height: 280,
+            animate: true,
+            store: store,
+            /*renderTo: '{!$Component.chartpage.chartPanel}',  */
+            renderTo: '{!JSENCODE($Component.chartpage.chartPanel)}',  
+            legend: {
+                position: 'right',
+                itemSpacing : 5
+            },
+            insetPadding: 20,
+            theme: 'Base:gradients',
+               series: [{
+                    type: 'pie',
+                    angleField: 'data',
+                    showInLegend: true,
+                    
+                    tips: {
+                        trackMouse: true,
+                        height: 50,
+                       
+                        renderer: function(storeItem, item) {
+                            // calculate and display percentage on hover
+                            var total = 0;
+                            store.each(function(rec) {
+                                total += rec.get('data');
+                            });
+                            console.log('>>>>');
+                                                        console.log(total );
+                            this.setTitle(storeItem.get('name') + '&nbsp;&nbsp;<br/>' + storeItem.get('data') + '<br/> '+(storeItem.get('data') / total * 100).toFixed(1) + '%');
+                        }
+                    },
+                    highlight: {
+                        segment: {
+                            margin: 10
+                        }
+                    },
+                    /*label: {
+                        field: 'name',
+                        display : 'rotate',
+                        calloutLine : {
+                            color : '#000000',
+                            width : 0.5,
+                            orientation : 'vertical'
+                        },
+                        font: '10px Helvetica, sans-serif',
+                        contrast: true,
+                        minMargin: 10,
+                        padding: 10
+                    },
+                            onCreateLabel: function(storeItem, item, i, display) {
+                           
+                            var me = this,
+                                    group = me.labelsGroup,
+                                    config = me.label,
+                                    bbox = me.bbox;
+                                    endLabelStyle = Ext.apply(config, me.seriesLabelStyle);
+                                    endLabelStyle.font = '10px Helvetica, sans-serif'; 
+                                   
+                                    
+                             var labelpos =  Ext.apply({
+                                    'type': 'text',
+                                    'text-anchor': 'middle',
+                                    'group': group,
+                                    'x': item.slice.point[0] + 10,
+                                    'y': bbox.y + bbox.height / 2,
+                            }, endLabelStyle || {}); 
+                            //console.log(storeItem.get('name'));     
+                            //console.log(labelpos.x );
+                            //console.log(labelpos.y);
+                            
+                            return me.chart.surface.add(labelpos);
+                    },*/
+                }]
+        });
+    } else if('{!chartType}' == 'Bar'){
+      var storemodal = [];
+      var chartmodal = [];
+      storemodal.push("expr1");
+      <apex:repeat value="{!jsonFields}" var="ele"> 
+         storemodal.push(Ext.String.escape('{!ele}'));   
+         chartmodal.push('{!ele}');     
+      </apex:repeat>
+ 
+        var store = Ext.create('Ext.data.Store', {
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    useSimpleAccessors: true
+                }
+            },
+            fields: storemodal,
+            data: {!recordjson}
+       });
+       
+       var chart = Ext.create('Ext.chart.Chart',{
+            xtype: 'chart',
+            width: 430,
+            height: 280,
+            animate: true,
+            shadow: true,
+            store: store,
+            /*renderTo: '{!$Component.chartpage.chartPanel}',  */
+            renderTo: '{!JSENCODE($Component.chartpage.chartPanel)}',  
+            /*legend: {
+                position: 'right',
+                itemSpacing : 5
+            },*/
+            axes: [{
+                type: 'Numeric',
+                position: 'left',
+                fields: chartmodal,
+                title: false,
+                grid: true,
+                label: {
+                    renderer: function(v) {
+                       // return String(v).replace(/(.)00000$/, '.$1M');
+                       return parseFloat(String(v)).toFixed(1);
+                    }
+                }
+            }, {
+                type: 'Category',
+                position: 'bottom',
+                fields: ['expr1'],
+                title: false
+            }],
+            series: [{
+                type: 'column',
+                axis: 'bottom',
+                xField: 'expr1',
+                yField: chartmodal,
+                stacked: true,
+                tips: {
+                    trackMouse: true,
+                    /*width: 65,
+                    height: 28,*/
+                    renderer: function(storeItem, item) {
+                       
+                        this.setTitle(String(item.value[0]) + '<br/>'  + String(item.yField)  + '&nbsp;&nbsp;<br/>' + String(item.value[1]).replace(/(.)00000$/, '.$1M'));
+                    }
+                }
+            }]
+        });
+
+        
+    }
+    
+
+   /*
+    var panel1 = Ext.create('widget.panel', {
+        width: 450,
+        height: 300,
+        title: 'Semester Trends',
+        renderTo: Ext.getBody(),
+        layout: 'fit',
+        tbar: [{
+            text: 'Save Chart',
+            handler: function() {
+                Ext.MessageBox.confirm('Confirm Download', 'Would you like to download the chart as an image?', function(choice){
+                    if(choice == 'yes'){
+                        chart.save({
+                            type: 'image/png'
+                        });
+                    }
+                });
+            }
+        }, {
+            text: 'Reload Data',
+            handler: function() {
+                // Add a short delay to prevent fast sequential clicks
+                window.loadTask.delay(100, function() {
+                    store1.loadData(generateData(6, 20));
+                });
+            }
+        }, {
+            enableToggle: true,
+            pressed: false,
+            text: 'Donut',
+            toggleHandler: function(btn, pressed) {
+                chart.series.first().donut = pressed ? 35 : false;
+                chart.refresh();
+            }
+        }],
+        items: chart
+    });  */
+     
+    
+}); 
+    </script>
+     
+    </apex:outputPanel>
+     </div> 
+    </apex:outputPanel>
+      <apex:actionSupport event="onmouseover" action="{!mouseHoverText}" rerender="pgblck"/>
+      
+      <apex:actionSupport event="onclick" action="{!mouseHoverText}" rerender="tooltipDiv"/>
+      <apex:outputPanel rendered="{!ISBLANK(recordjson)}" onmouseover="mouseHoverText();" style="background-color: #f8f8f8 !important;">
+          <svg id="chart" width="400" height="280">
+              <defs id="defs"></defs><g><rect x="0" y="0" width="400" height="280" fill="#FFFFFF">
+              </rect>
+              <text text-anchor="middle" x="200" y="166" font-family="Arial" font-size="15" fill="black">No data found</text>
+              </g>
+          </svg>
+      </apex:outputPanel>
+     
+       <apex:form id="theform">
+       <apex:actionFunction name="mouseHoverText" action="{!mouseHoverText}" rerender="pgblck"/>
+            <center>
+        
+            <apex:outputPanel >
+            <apex:selectList id="timeframegroup" onchange="fetchAggregateData('true');" value="{!timeframegroup}" size="1" multiselect="false" style="margin-left:10px;border-color: #99bce8;">
+                <apex:selectOption itemLabel="All" itemValue="All"></apex:selectOption>
+                <apex:selectOption itemLabel="Yearly" itemValue="Yearly"></apex:selectOption>
+                <apex:selectOption itemLabel="Monthly" itemValue="Monthly"></apex:selectOption>
+                <apex:selectOption itemLabel="Weekly" itemValue="Weekly"></apex:selectOption>
+                <!-- apex:actionSupport event="onchange" action="{!fetchAggregateData}"  >  
+                    <apex:param value="true" assignTo="{!isLoad}" name="lo"/>
+                </apex:actionSupport-->           
+            </apex:selectList>
+            
+            <apex:actionFunction name="fetchAggregateData" action="{!fetchAggregateData}" rerender="pgblck,chartpage,mainId" oncomplete="javascript:location.reload();">   
+                <apex:param value="" assignTo="{!isLoad}" name="lo"/>
+            </apex:actionFunction>
+            
+                
+             <apex:selectList id="aggregateField" onchange="fetchAggregateData('true');" value="{!aggregateField}" size="1" multiselect="false" style="margin-left:10px;border-color: #99bce8;">
+                <apex:selectOption itemLabel="Count" itemValue="Count"></apex:selectOption>
+                <apex:selectOption itemLabel="Amount" itemValue="Amount"></apex:selectOption>
+                <apex:selectOption itemLabel="Revenue" itemValue="Revenue"></apex:selectOption>
+                <apex:selectOption itemLabel="Quantity" itemValue="Quantity"></apex:selectOption>
+                <!-- apex:actionSupport event="onchange" action="{!fetchAggregateData}"  / -->
+            </apex:selectList>
+            
+             <apex:selectList id="groupbyField" onchange="fetchAggregateData('true');" value="{!groupbyField}" size="1" multiselect="false" style="margin-left:10px;border-color: #99bce8;">
+                <apex:selectOption itemLabel="Stage" itemValue="Stage"></apex:selectOption>
+                <apex:selectOption itemLabel="Source" itemValue="Source"></apex:selectOption>
+                <apex:selectOption itemLabel="Type" itemValue="Type"></apex:selectOption>
+                <apex:selectOption itemLabel="Account" itemValue="Account"></apex:selectOption>
+                <apex:selectOption itemLabel="Campaign" itemValue="Campaign"></apex:selectOption>
+                <!--  <apex:actionSupport event="onchange" action="{!fetchAggregateData}" />-->
+            </apex:selectList>
+            
+            <div id="tooltipDiv" >
+                <h2>{!chartType} chart showing {!timeframegroup} based on {!aggregateField} And {!groupbyField}</h2>            
+            </div>
+            
+        </apex:outputPanel>
+        
+         </center>
+        </apex:form>
+        
+       <script>
+             function changeTitle(){
+             
+                var x;            
+               var selval = document.getElementById("chartpage:theform:timeframegroup").value;
+               if(selval=="All"){
+                selval="All records";
+                x="pie";
+                }
+                else if(selval=="Yearly"){
+                selval="Yearly records";
+                x="bar";
+                }
+                else if(selval=="Monthly"){
+                selval="Monthly records";
+                x="bar";
+                }
+                else if(selval=="Weekly"){
+                selval="Weekly records";
+                x="bar";
+                }
+                
+               var aggregateF = document.getElementById("chartpage:theform:aggregateField").value;
+             
+               var groupbyF = document.getElementById("chartpage:theform:groupbyField").value;
+             
+               var DisplayValue;
+               
+               
+               DisplayValue= x+" chart showing "+selval +" based on "+aggregateF +" & "+groupbyF;
+               
+               document.getElementById("tooltipDiv").setAttribute('title',DisplayValue);
+
+       }
+       </script>
+       
+</apex:page>

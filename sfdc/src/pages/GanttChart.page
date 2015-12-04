@@ -1,0 +1,85 @@
+<apex:page id="page" sidebar="false" showHeader="false" controller="GanttChart" >
+	<head>
+    	<title>How to Start with dhtmlxGantt</title>
+    	<apex:stylesheet value="{!URLFOR($Resource.Gantt, 'codebase/dhtmlxgantt.css')}"/>
+    	<script type="text/javascript" language="JavaScript" src="{!URLFOR($Resource.Gantt, 'codebase/dhtmlxgantt.js')}"></script>
+    	<style type="text/css">
+        	html, body{ height:100%; padding:0px; margin:0px; overflow: hidden;}
+    	</style>
+	</head>
+
+	<body>
+		<div id="gantt_here" style='width:100%; height:100%;'></div>
+        <script type="text/javascript">
+         	var tasks;
+            gantt.init("gantt_here");
+            window.onload = function(){    
+            	gantt.parse(document.getElementById("page:form:data").value);    
+            };
+                
+            // On AFTER TASK ADD
+            gantt.attachEvent("onAfterTaskAdd", function(id,item){
+            	GanttChart.getInitialData(JSON.stringify(item),function(results, event) {
+                	if(event.type === 'exception'){
+                    	console.log("exception");
+                    }else if(event.status){
+                    	gantt.changeTaskId(id, event.result);//changes tasks data
+                    }else{
+                    }
+                });
+             })
+                
+            // On AFTER TASK DELETE
+            gantt.attachEvent("onAfterTaskDelete", function(id,item){
+                onAfterTaskDelete(JSON.stringify(item));
+
+            });
+                
+            // On AFTER LINK ADD
+            gantt.attachEvent("onAfterLinkAdd", function(id,item){
+          		GanttChart.getInitiallinks(JSON.stringify(item),function(results, event) {
+               		if(event.type === 'exception'){
+               			console.log("exception");
+                    }else if(event.status){
+	                    gantt.changeLinkId(id, event.result);
+                    }else{
+                    }
+                });
+                onAfterLinkAdd(JSON.stringify(item));
+			})
+                            
+            // On AFTER LINK DELETE
+            gantt.attachEvent("onAfterLinkDelete", function(id,item){
+                onAfterLinkDelete(JSON.stringify(item));
+
+            });
+                
+                
+            </script>
+			<apex:form id="form" >
+            
+			<apex:actionFunction action="{!addTask}" name="onAfterTaskAdd" reRender="page">
+				<apex:param name="jsonString" assignTo="{!dataInJSON}" value="" />
+			</apex:actionFunction>
+                
+			<apex:actionFunction action="{!fetchData}" name="onAfterTaskUpdate" reRender="page">
+				<apex:param name="jsonString" assignTo="{!dataInJSON}" value="" />
+			</apex:actionFunction>
+                
+			<apex:actionFunction action="{!deleteTask}" name="onAfterTaskDelete" reRender="page">
+				<apex:param name="jsonString" assignTo="{!dataInJSON}" value="" />
+			</apex:actionFunction>
+                
+			<apex:actionFunction action="{!addlink}" name="onAfterLinkAdd" reRender="page">
+				<apex:param name="jsonString" assignTo="{!dataInJSON}" value="" />
+			</apex:actionFunction>
+                
+			<apex:actionFunction action="{!deleteLink}" name="onAfterLinkDelete" reRender="page">
+				<apex:param name="jsonString" assignTo="{!dataInJSON}" value="" />
+			</apex:actionFunction>
+ 
+			<apex:inputTextarea id="data" value="{!initialData}" style="display:none;"/>
+                
+		</apex:form>
+	</body>    
+</apex:page>

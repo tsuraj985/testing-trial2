@@ -1,0 +1,527 @@
+<apex:page Controller="AccountList" sidebar="false" showHeader="false" docType="html-5.0" standardStylesheets="false">    
+    <head> 
+      <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+      <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/> 
+      <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script> 
+      <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+      
+      <style>
+      .ui-field-contain{margin-top:0px; margin-bottom:0;}
+      ui-field-contain select{padding-top:0px;}
+      .ui-mobile label, .ui-controlgroup-label{margin-bottom:0px;}
+      </style>
+    </head>
+    <div data-role="header" data-theme="b">
+        <a href="/apex/Business?core.apexpages.devmode.url=1" class="ui-btn-left ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">Settings</a><!-- onclick ="redirect(); return true;"-->
+            <h1>Account tracker Application</h1>
+        <a href="/apex/Location?core.apexpages.devmode.url=1" class="ui-btn-right ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-carat-r">Location</a>
+    </div>
+    <apex:outputPanel id="tt">
+    <script src="/soap/ajax/29.0/connection.js"/>
+    <script src="/soap/ajax/29.0/apex.js"/> 
+        <script type="text/javascript"
+        src="https://maps.google.com/maps/api/js?sensor=false"></script>
+        
+        <p id="demo" style="display:none;"></p>
+        <script>
+            var x = document.getElementById("demo");
+            var lat ;
+            var lon ;
+            var dummyTest;
+            var add =new Array();
+            
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition,errorCallback);           
+                            
+                } else { 
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            }
+            
+            function errorCallback() {
+               if('{!$User.GeaoLocation__latitude__s}'!='' && '{!$User.GeaoLocation__longitude__s}'!=''){
+                    lat = '{!$User.GeaoLocation__latitude__s}';
+                    lon = '{!$User.GeaoLocation__longitude__s}';
+                    //console.log(lat+' -inside if- '+lon);       
+                    initialize(); 
+                    x.innerHTML = "Latitude: " + lat + " Longitude: " + lon;                                    
+                }
+                
+                else{
+                    console.log('****'+'{!$User.Around_Me_Street_Address__c}');
+                    if('{!$User.Around_Me_Street_Address__c}' != null && '{!$User.Around_Me_Street_Address__c}' != ''){
+                        console.log('****in around me--');
+                        add.push("{!$User.Around_Me_Street_Address__c}");    
+                    }else{
+                        add.push("{!$User.Street}, {!$User.City},{!$User.PostalCode}, {!$User.Country}");    
+                    }
+                   testAddress();
+                      
+                }
+            }
+            
+            function showPosition(position) {
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                initialize(); 
+                //console.log(lat+'***show***'+lon);                               
+                x.innerHTML = "Latitude: " + lat + " Longitude: " + lon;  
+            }
+            //getLocation();
+                         
+            var geocoder;
+            var map;
+            var infowindow = new google.maps.InfoWindow();
+            var places = [];
+            var title_content = new Array();                    
+            var popup_content = new Array();                    
+            var address = new Array();
+            var accountId = new Array(); 
+            var address_position = 0;                    
+            var timeout = 600;
+            var todo = new Array();
+            //getLocation();
+            function initialize(){
+                geocoder = new google.maps.Geocoder();    
+                console.log(lon+'***latlon--'+lat );
+                var latlng = new google.maps.LatLng(lat, lon); 
+                console.log('***latlon--'+latlng);
+                var myOptions = {
+                  zoom: 12,
+                  center: latlng,
+                  mapTypeId: 'roadmap' /* ,
+                  mapTypeId: google.maps.MapTypeId.TERRAIN */
+                }                         
+                map = new google.maps.Map(document.getElementById("map"), myOptions);
+                //setupMarker();
+               console.log(accountId);
+               
+                <apex:variable var="i" value="{!0}" />
+               
+                var cityCircle;
+                cityCircle = new google.maps.Circle();
+                
+                 <apex:repeat value="{!objAccounts}" var="accountObj" id="accId"> 
+                    title_content.push("Name: "+"{!accountObj.Name}"+" \nClick for more Detail");
+                    
+                    var popupContent='';
+                    <apex:repeat value="{!fields}" var="f">
+                       if('{!f}'!='BillingLatitude' && '{!f}'!='BillingLongitude'){
+                           if(popupContent==''){
+                               popupContent = "{!accountObj[f.fieldPath]}";
+                           }else{
+                               if('{!f}'=='Phone'){
+                                    console.log("<br/>" +"<a href=\"tel:{!accountObj[f.fieldPath]}\">{!accountObj[f.fieldPath]}</a>");
+                                    popupContent+="<br/>" +"<a href=\"tel:{!accountObj[f.fieldPath]}\">{!accountObj[f.fieldPath]}</a>";
+                               }else{
+                                   popupContent += "<br/>"+"{!accountObj[f.fieldPath]}";
+                               }
+                           }
+                       }
+                    </apex:repeat> 
+                    popup_content.push(popupContent);                                                    
+                    var marker;
+                    if({!i}==0){
+                        accountId.push("{!$User.Id}");
+                        
+                        marker = new google.maps.Marker({
+                            map: map,   
+                            position: new google.maps.LatLng(lat, lon),
+                            title:title_content[{!i}],
+                            icon: getMapIconUrl({!i}+1)
+                       });
+                    }else{
+                        accountId.push("{!accountObj.Id}");
+                        
+                        marker = new google.maps.Marker({
+                            map: map,   
+                            position: new google.maps.LatLng("{!accountObj.BillingLatitude}","{!accountObj.BillingLongitude}"),
+                            title:title_content[{!i}],
+                            icon: getMapIconUrl({!i}+1)
+                       });
+                    }
+                    
+                    marker['infowindow'] = new google.maps.InfoWindow();
+                                                                  
+                      google.maps.event.addListener(marker, 'click', function() {
+                            marker['infowindow'].setContent(popup_content[{!i}]);
+                            marker['infowindow'].open(map, this);
+                        });
+                      
+                        google.maps.event.addListener(marker, 'dblclick', function() {
+                            console.log("***{!i}-- "+accountId[{!i}]);
+                            console.log(marker);
+                            if ((typeof sforce != 'undefined') && (sforce != null) )  {
+                                try{
+                                    sforce.one.navigateToSObject(accountId[{!i}]);
+                                }catch(e){
+                                    window.open('https://ap2.salesforce.com/'+accountId[{!i}]);
+                                }
+                            } else {
+                                window.open('https://ap2.salesforce.com/'+accountId[{!i}]);
+                            }
+                        });
+                        if((popup_content.length)/2 < {!i}){
+                            var userLocation = {}; 
+                            userLocation['myloc'] = {
+                                  radius: new google.maps.LatLng(lat, lon),
+                                  miles: parseFloat('{!selectedRadius}')
+                            };
+                            
+                           
+                            for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            cityCircle.setOptions(populationOptions);
+                            // Add the circle for this city to the map.
+                           // cityCircle = new google.maps.Circle(populationOptions);
+                            }
+                          }
+                    <apex:variable var="i" value="{!(i+1)}" />
+                 </apex:repeat>
+                
+                var cityCircles = [];
+               google.maps.event.addListener(map, 'zoom_changed', function() {
+               
+               var zoomLevel = map.getZoom();
+               console.log('****** zoomLevel Level '+zoomLevel);
+              if(zoomLevel>11){
+              console.log('****** zoomLevel Level greater than 11');    
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }       
+
+              }
+              else if(zoomLevel< 11 && zoomLevel>=9){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*3)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }       
+
+              }
+              else if(zoomLevel< 9 && zoomLevel>=7){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*25)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }       
+
+                }
+                else if(zoomLevel< 7 && zoomLevel>=5){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*50)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }   
+                }
+                else if(zoomLevel< 5 && zoomLevel>=3){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*180)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                           cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }   
+                }
+                else if(zoomLevel< 3 && zoomLevel>=1){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*500)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                           
+                            // Add the circle for this city to the map.
+                           cityCircle.setOptions(populationOptions);
+                           // cityCircle = new google.maps.Circle(populationOptions);
+                            }   
+                }
+                else if(zoomLevel<1 && zoomLevel>=0){
+                    for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.2,
+                              map: map,
+                              bounds: map.getBounds(),
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles*1250)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle.setOptions(populationOptions);
+                            //cityCircle = new google.maps.Circle(populationOptions);
+                            }   
+                }
+                
+                });                  
+            } 
+            
+            function testAddress(){
+                geocoder1 = new google.maps.Geocoder();                           
+                testLatLon(address_position);
+            }
+            function testLatLon(position){
+                
+                geocoder1.geocode({'address': add[position]}, function(results, status){
+                    if (status == google.maps.GeocoderStatus.OK) {
+                       var latTest = results[0].geometry.location;
+                        console.log(latTest);
+                        lat = latTest.k;
+                        lon = latTest.D;
+                        initialize(); 
+                        console.log(lat+' *** '+lon);
+                        x.innerHTML = "Latitude: " + lat + " Longitude: " + lon;    
+                    }
+                });
+            }
+                        
+            function addMarker(position){
+                geocoder.geocode({'address': address[position]}, function(results, status){
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        //console.log('****Positin--'+ position);
+                        //console.log('***results--'+ results);
+                        //console.log('***results[0]--'+ results[0]);
+                        var latlng = results[0].geometry.location;
+                        if(position == 0){
+                            latlng = new google.maps.LatLng(lat, lon);
+                        }else{
+                            latlng  = results[0].geometry.location;
+                            //console.log('gourav: '+latlng );
+                        }
+                        
+                        places[position] = latlng;                               
+                        var marker = new google.maps.Marker({
+                            position: places[position],
+                            title:title_content[position],
+                            icon: getMapIconUrl(position+1),
+                            map: map
+                        });
+            
+                        google.maps.event.addListener(marker, 'click', function() {
+                            
+                            if (!infowindow) {
+                                infowindow = new google.maps.InfoWindow();
+                            }
+                            
+                            infowindow.setContent(popup_content[position]);
+                            infowindow.open(map, marker);
+                            
+                        });
+                        
+                        google.maps.event.addListener(marker, 'dblclick', function() {
+                            //console.log(accountId[position]);
+                            //window.open('https://ap2.salesforce.com/'+accountId[position]);
+                            if ((typeof sforce != 'undefined') && (sforce != null) )  {
+                                try{
+                                    sforce.one.navigateToSObject(accountId[position]);
+                                }catch(e){
+                                    window.open('https://ap2.salesforce.com/'+accountId[position]);
+                                }
+                            } else {
+                                //window.location="/" + recId;
+                                window.open('https://ap2.salesforce.com/'+accountId[position]);
+                            }
+                        });
+                        //console.log(popup_content.length/4+' == '+position)
+                        if((popup_content.length)/2 < position){
+                            var userLocation = {}; 
+                            userLocation['myloc'] = {
+                                  radius: new google.maps.LatLng(lat, lon),
+                                  miles: parseFloat('{!selectedRadius}')
+                            };
+                            
+                            var cityCircle;
+                            for (var city in userLocation) {
+                            var populationOptions = {
+                              strokeColor: '#000',
+                              strokeOpacity: 0.2,
+                              strokeWeight: 2,
+                              fillColor: '#00FF99',
+                              fillOpacity: 0.1,
+                              map: map,
+                              center: userLocation[city].radius,
+                              radius: getInputRadius(userLocation[city].miles)//userLocation[city].miles * 1609.34 //Math.sqrt(userLocation[city].miles) * 1609.34 
+                            };
+                            // Add the circle for this city to the map.
+                            cityCircle = new google.maps.Circle(populationOptions);
+                            }
+                        }               
+                      
+                    }
+                    else{
+                        if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+                            setTimeout(function() { addMarker(position); }, (timeout * 3));
+                        }
+                    }
+                    address_position++;
+                    if (address_position < address.length){
+                        setTimeout(function() { addMarker(address_position); }, (timeout));
+                    }
+                });
+            }
+            /*
+                @Description: To Put diffren color image on Google Map
+                @Param: Marker Number to Add on map.
+            */
+            function getMapIconUrl(markerNumber){
+                if(markerNumber == 1){               
+                    return '{!URLFOR($Resource.user)}'; //'https://c.ap2.visual.force.com/resource/1423056108000/user';//
+                }
+                if(markerNumber > 5){
+                    markerNumber = markerNumber%5;
+                }
+                if(markerNumber == 0){
+                    markerNumber = 5;
+                }               
+                var mapIconUrl = "{!URLFOR($Resource.GoogleMarkers, 'GoogleMark/1.png')}";
+                var newIcon = markerNumber+'.png';
+                mapIconUrl = mapIconUrl.replace('1.png',newIcon);
+                return mapIconUrl;
+            }  
+            
+            function getInputRadius(rad) {
+                var radius = parseFloat(rad);///$("[id$='radiusId']").val());
+                if (1 > radius.length || !$.isNumeric(radius)) return alert("Enter a numeric radius"), !1;
+                radius_unit = '{!selectedRadiusUnit}';//$("select#radiusId").val();
+                switch (radius_unit) {
+                    case "m":
+                        return radius;
+                    case "km":
+                        return 1E3 * radius;
+                    case "ft":
+                        return 0.3048 * radius;
+                    case "mi":
+                        return 1609.34 * radius;
+                    default:
+                        return alert("Invalid radius unit"), !1
+                }
+            }
+            
+            function redirect(){
+                $.mobile.changePage("../apex/GoogleAccountMap?core.apexpages.devmode.url=1");
+            }
+            
+        </script>
+        
+        
+        </apex:outputPanel> 
+        <!--apex:form id="frmId">            
+            <apex:pageMessages /> 
+            <section class="ui-field-contain12">
+                <label for="select-native-2" html-data-mini="true" style="padding: 6px;padding-bottom: 2px !important;">
+                    Select Radius 
+                </label> 
+            </section>                        
+            <section class="ui-field-contain12">                           
+                <apex:selectList value="{!selectedRadius}" size="1" onchange="onchangeRad1()" html-name="select-native-2" html-data-mini="true" id="select-native-2">
+                    <apex:selectOptions value="{!Radius}"/>          
+                </apex:selectList> 
+                <apex:actionFunction name="onchangeRad1" reRender="pgId,tt,ee" id="radiusId"/>
+            </section>
+            <section class="ui-field-contain12">
+                <input type="checkbox" name="checkbox-min-0" id="checkbox-min-0" data-mini="true"/>
+                <label for="checkbox-min-0"> Contract expiration date</label>
+            </section>                     
+        </apex:form-->
+        <apex:outputPanel id="ee">
+        <!--select width="100%" id="radiusId" onchange="tets();">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="40">40</option>
+        </select-->  
+        <div id="map" ></div>   
+        <script>
+            getLocation();
+        </script>
+        <style>    
+            #map { 
+                font-size:12px;                 
+                height:600px;
+                overflow:hidden !important;
+            }       
+            body{
+                margin:0px !important;
+                 overflow:hidden !important;
+            }
+            .oneAlohaPage {
+                overflow: hidden; !important;
+            }
+        </style>    
+      </apex:outputPanel> 
+</apex:page>

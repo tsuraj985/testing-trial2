@@ -1,0 +1,41 @@
+<apex:page standardController="Account" extensions="addAttendee" sidebar="false">
+ <apex:form >
+ <apex:pageBlock title="Accounts" id="pb">
+ <apex:pageMessages />
+ <apex:variable var="rowNumber" value="{!0}"/>
+ <apex:pageblockSection columns="1">
+ <apex:pageBlockTable title="Contacts" var="acc" value="{!attendeeList}"> 
+
+ <apex:column headerValue="No." style="width:20px; text-align:center;" headerClass="centertext">
+ <apex:outputText value="{0}" style="text-align:center;"> 
+ <apex:param value="{!rowNumber+1}" /> 
+ </apex:outputText>
+ </apex:column> 
+ <apex:column headerValue="First Name" >
+ <apex:inputField value="{!acc.FirstName}"/>
+ </apex:column> 
+ <apex:column headerValue="Last Name" >
+ <apex:inputField value="{!acc.LastName}"/>
+ </apex:column> 
+ <apex:column headerValue="Phone" >
+ <apex:inputField value="{!acc.Phone}"/>
+ </apex:column> 
+ <apex:column headerValue="Email" >
+ <apex:inputField value="{!acc.Email}"/>
+ </apex:column> 
+ <apex:column headerValue="Action" >
+ <apex:commandButton value="Delete" action="{!deleteRow}" reRender="pb">
+ <apex:param name="rowIndex" value="{!rowNumber}"/>
+ </apex:commandButton>
+ <apex:variable var="rowNumber" value="{!rowNumber+1}"/>
+ </apex:column> 
+ </apex:pageBlockTable>
+ <apex:commandButton action="{!addRow}" value="Add Attendee" reRender="pb"/>
+ </apex:pageblockSection>
+ <apex:pageBlockButtons >
+ <apex:commandButton value="Save" action="{!ave}" />
+ <apex:commandButton value="Cancel" action="{!cancel}"/>
+ </apex:pageBlockButtons>
+ </apex:pageBlock>
+ </apex:form> 
+ </apex:page>

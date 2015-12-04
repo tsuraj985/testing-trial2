@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Ida_Default_Pricebook__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Default Pricebook</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ida_Menu_Subtitle__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Menu Subtitle</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ida_Menu_Title__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Menu Title</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ida_Setup_Activation_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Setup Activation Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Ida_Setup_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Setup Description</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Ida_Setup_Expiration_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Setup Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Ida_Site_Logo__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Site Logo</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Ida_Site_Title__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ida Site Title</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Ida Setup</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Ida_Setup_Activation_Date__c</columns>
+        <columns>Ida_Setup_Expiration_Date__c</columns>
+        <columns>Ida_Setup_Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Ida Setup Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Ida Setup</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Ida_Setup_Activation_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Ida_Setup_Expiration_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Ida_Setup_Description__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Clone_Include_Related_List</fullName>
+        <availability>online</availability>
+        <description>Clone the Ids Setup including the related list values</description>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Clone(Include Related List)</masterLabel>
+        <openType>replace</openType>
+        <page>Ida_Setup_Clone</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Sample_Site</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Sample Site</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+var setupId = &quot;{!Ida_Setup__c.Id}&quot;;
+
+var clickedButtons = new Array();
+var buttons = document.getElementsByTagName(&quot;input&quot;);
+for(var i = 0; i &lt; buttons.length; i++)
+{
+    if(buttons[i].type == &quot;submit&quot; || buttons[i].type == &quot;button&quot;)
+    {
+        if(buttons[i].value == &quot;Create Sample Site&quot;)
+        {
+            clickedButtons.push(buttons[i]);
+        }
+    }
+}
+
+var disableButtons = function()
+{
+    for(var i = 0; i &lt; clickedButtons.length; i++)
+    {
+        clickedButtons[i].disabled = true;
+        clickedButtons[i].className = &quot;btnDisabled&quot;;
+        clickedButtons[i].value = &quot;In Progress...&quot;;
+    }
+};
+var enableButtons = function()
+{
+    for(var i = 0; i &lt; clickedButtons.length; i++)
+    {
+        clickedButtons[i].disabled = false;
+        clickedButtons[i].className = &quot;btn&quot;;
+        clickedButtons[i].value = &quot;Create Sample Site&quot;;
+    }
+};
+
+var successFunc = function()
+{
+    alert(&quot;Congratulations! You have created the sample site successfully!&quot;);
+    enableButtons();
+    window.location.reload();
+};
+
+var failureFunc = function(error)
+{
+    alert(error);
+    enableButtons();
+};
+
+if(confirm(&quot;This operation will delete all the sample data under the setup! Are you sure?&quot;))
+{
+    disableButtons();
+    var className = &quot;Ida_SampleGenerator&quot;;
+    try
+    {
+        var queryResult = sforce.connection.query(&quot;select NamespacePrefix from ApexClass where Name = &apos;Ida_SampleGenerator&apos;&quot;);
+        var records = queryResult.getArray(&quot;records&quot;); 
+        if(records.length &gt; 0 &amp;&amp; records[0].NamespacePrefix != null) 
+        { 
+            className = records[0].NamespacePrefix + &quot;.&quot; + className; 
+        }
+    }
+    catch(error) 
+    { 
+        alert(error); 
+    } 
+
+    sforce.apex.execute(className, &quot;generateSampleData&quot;, {id : setupId}, {onSuccess: successFunc, onFailure: failureFunc});
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Launch</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Launch</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+
+var serverURL = &quot;{!$Api.Enterprise_Server_URL_170}&quot;;
+var sessionID = &quot;{!$Api.Session_ID}&quot;;
+var recordID = &quot;{!Ida_Setup__c.Id}&quot;;
+var splits = serverURL.split(&quot;.salesforce&quot;);
+serverURL = splits[0] + &quot;-api.salesforce&quot; + splits[1];
+serverURL = serverURL.replace(/\/c\//g, &quot;/m/&quot;);
+var intervalID = &quot;&quot;;
+var processID = &quot;&quot;;
+var className = &quot;Ida_Setup&quot;;
+
+var clickedButtons = new Array();
+var buttons = document.getElementsByTagName(&quot;input&quot;);
+for(var i = 0; i &lt; buttons.length; i++)
+{
+    if(buttons[i].type == &quot;submit&quot; || buttons[i].type == &quot;button&quot;)
+    {
+        if(buttons[i].value == &quot;Launch&quot;)
+        {
+            clickedButtons.push(buttons[i]);
+        }
+    }
+}
+
+var disableButtons = function()
+{
+    for(var i = 0; i &lt; clickedButtons.length; i++)
+    {
+        clickedButtons[i].disabled = true;
+        clickedButtons[i].className = &quot;btnDisabled&quot;;
+        clickedButtons[i].value = &quot;Launching...&quot;;
+    }
+};
+var enableButtons = function()
+{
+    for(var i = 0; i &lt; clickedButtons.length; i++)
+    {
+        clickedButtons[i].disabled = false;
+        clickedButtons[i].className = &quot;btn&quot;;
+        clickedButtons[i].value = &quot;Launch&quot;;
+    }
+};
+
+var checkStatus = function()
+{
+    var state  = sforce.apex.execute(className, &quot;checkStatus&quot;, {serverUrl:serverURL, sessionId:sessionID, processId:processID});
+    if(state == &quot;&quot;)
+    {
+        window.clearInterval(intervalID);
+        alert(&quot;Fail to generate xml, please try again!&quot;);
+        enableButtons();
+    }
+    else if(state == &quot;Completed&quot; || state == &quot;Error&quot;)
+    {
+        window.clearInterval(intervalID);
+        if(state == &quot;Completed&quot;)
+        {
+            alert(&quot;Congratulations! The &apos;idaxml&apos; has been uploaded to static resource.&quot;);
+            enableButtons();
+        }
+        else
+        {
+            alert(&quot;Fail to generate xml, please try again!&quot;);
+            enableButtons();
+        }
+    }    
+};
+
+var successFunc = function(result)
+{
+    if(result == &quot;&quot;)
+    {
+        alert(&quot;Fail to generate xml, please try again!&quot;);
+    }
+    else
+    {
+        processID = result;
+        intervalID = setInterval(checkStatus, 1000);
+    }
+};
+
+var failureFunc = function(error)
+{
+    alert(error);
+    enableButtons();
+};
+
+disableButtons();
+try
+{
+    var queryResult = sforce.connection.query(&quot;select NamespacePrefix from ApexClass where Name = &apos;Ida_Setup&apos;&quot;);
+    var records = queryResult.getArray(&quot;records&quot;);
+    if(records.length &gt; 0 &amp;&amp; records[0].NamespacePrefix != null)
+    {
+        className = records[0].NamespacePrefix + &quot;.&quot; + className;
+    }
+}
+catch(error)
+{
+    alert(error);
+}
+
+sforce.apex.execute(className, &quot;generateXml&quot;, {resourceName:&apos;idaxml&apos;, serverUrl:serverURL, sessionId:sessionID, recordId:recordID}, {onSuccess: successFunc, onFailure: failureFunc});</url>
+    </webLinks>
+</CustomObject>

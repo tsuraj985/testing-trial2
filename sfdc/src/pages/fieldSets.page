@@ -1,0 +1,19 @@
+<apex:page standardController="Contact" recordSetVar="contacts">
+         <apex:pageBlock title="My Contacts">
+          <apex:pageBlockSection >
+          <apex:pageBlockTable value="{!$ObjectType.Contact.FieldSets.testFieldSets}" var="f">
+          <apex:column headerValue="Contact">
+          <apex:facet name="header">Name</apex:facet>
+          <apex:outputText value="{!Contact[f]}" />
+            </apex:column>
+             <apex:column value="{!f.Label}">
+            <apex:facet name="header">Label</apex:facet>
+            </apex:column>
+            <apex:column value="{!f.Type}" >
+             <apex:facet name="header">Data Type</apex:facet>
+            </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+
+    </apex:pageBlock>
+</apex:page>

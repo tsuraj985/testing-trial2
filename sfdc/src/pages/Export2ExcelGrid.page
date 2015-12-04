@@ -1,0 +1,66 @@
+<apex:page controller="ExtjsOppController_Cls" ContentType="text/html" action="{!export2Excel}" sidebar="false" showHeader="false" readonly="true" contenttype="application/vnd.ms-excel#AWOM-{!TODAY()}.xls">
+   <apex:pageMessages />
+   <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+       <head>
+           <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+           <style>
+               table tr td{
+                   border:1px solid gray;
+               }
+               th{
+                   border:1px solid black;
+                   background:gray;
+                   color:#fff; 
+               }
+           </style>
+       </head> 
+       <body>
+           <table width="100%" >
+               <thead>
+                   <tr>
+                       <apex:repeat value="{!columnInfo}" var="col">
+                           <th x:autofilter='all' style="background-color: gray">
+                               {!col.lookupLabel}
+                           </th>
+                       </apex:repeat> 
+                   </tr>
+               </thead>
+               <tbody> 
+               <apex:repeat value="{!mainList}" var="op1">
+                   <apex:repeat value="{!op1}" var="op">
+                        <tr>
+                            <apex:repeat value="{!columnInfo}" var="col">
+                                <td   > 
+                                    <apex:outputPanel rendered="{!IF(col.datatype == 'DATETIME',true,false)}" layout="block">
+                                        <apex:outputText value="{0,date,dd-MM-yyyy}">
+                                            <apex:param value="{!op[col.lookupField]}"/>
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(col.datatype != 'DATETIME',true,false)}" layout="block">
+                                        <apex:outputPanel rendered="{!IF(col.datatype == 'DATE',true,false)}" layout="block">
+                                            <apex:outputText value="{0,date,dd-MM-yyyy}">
+                                                <apex:param value="{!op[col.lookupField]}"/> 
+                                            </apex:outputText>
+                                        </apex:outputPanel>  
+                                        
+                                        <apex:outputPanel rendered="{!IF(col.datatype != 'DATE',true,false)}" layout="block">
+                                            <!-- apex:outputField value="{!op[col.fieldname]}" rendered="{!AND(!CONTAINS(col.fieldname,'connection'),IF(col.datatype != 'BOOLEAN',true,false),IF(col.datatype != 'CURRENCY',true,false))}"/ -->
+                                            <apex:outputText value="{!op[col.lookupField]}" rendered="{!AND(!CONTAINS(col.fieldname,'connection'),IF(col.datatype != 'BOOLEAN',true,false),IF(col.datatype != 'CURRENCY',true,false))}"/>
+                                            <apex:outputPanel rendered="{!OR(CONTAINS(col.fieldname,'connection'),IF(col.datatype == 'BOOLEAN',true,false),IF(col.datatype == 'CURRENCY',true,false))}" layout="block">
+                                                <apex:outputPanel rendered="{!!IsBlank(op[col.fieldname])}" layout="block">
+                                                   {!op[col.lookupField]}
+                                               </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </td>
+                            </apex:repeat>  
+                        </tr>
+                   </apex:repeat></apex:repeat>
+               </tbody>
+           </table>
+            
+       </body>
+      
+  </html>
+</apex:page>

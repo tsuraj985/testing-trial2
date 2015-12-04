@@ -1,0 +1,16 @@
+<apex:page controller="WrapperDemo_Con">  
+   <apex:Form >  
+     <apex:pageBlock title="Wrapper Demo">  
+       <apex:pageBlockButtons >  
+         <apex:commandButton value="Delete" action="{!deleteRecords}"/>  
+       </apex:pageBlockButtons>  
+       <apex:pageBlockTable value="{!wrappers}" var="wrap">  
+         <apex:column headerValue="Select">            
+           <apex:inputCheckbox value="{!wrap.isSelected}"/>  
+         </apex:column>  
+         <apex:column value="{!wrap.myContact.lastname}"/>  
+         <apex:column value="{!wrap.myContact.phone}"/>  
+       </apex:pageBlockTable>  
+     </apex:pageBlock>  
+   </apex:Form>  
+  </apex:page>

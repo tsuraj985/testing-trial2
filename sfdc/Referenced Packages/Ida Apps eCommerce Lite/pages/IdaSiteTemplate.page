@@ -1,0 +1,65 @@
+<apex:page showHeader="false" sidebar="false" id="siteTemplate" controller="idawcms.Ida_General_Component_Controller">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>{!setupConfig.siteTitle}</title>
+        <apex:stylesheet value="{!URLFOR($Resource.idawcms__build_HTML, 'build_HTML/build-Default/styles/fs.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.idawcms__build_HTML, 'build_HTML/build-Default/styles/menubase.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.idawcms__build_HTML, 'build_HTML/build-Default/scripts/menu.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.idawcms__yui_2_7, 'yui_2.7.0/build/yahoo-dom-event.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.idawcms__yui_2_7, 'yui_2.7.0/build/animation-min.js')}" />
+        
+        <!--<script type="text/javascript">
+            function doSearch()
+            {
+                var keyWord = document.getElementById("search").value;
+                if(keyWord == "")
+                {
+                    alert("keyword can't be null");
+                    return false;
+                }
+                if(keyWord.length < 2)
+                {
+                    alert("at least 2 letters");
+                    return false;
+                }
+                window.location = "{!$Page.idawcms__IdaSearch}?keyword="+encodeURIComponent(keyWord);
+            }
+        </script>-->
+    </head>
+    
+    <!-- Header Area -->
+    <div class="fs_header">
+        <div style="float:left">
+            <apex:outputLink value="{!$Page.idawcms__IdaHome}"><img src="{!setupConfig.logo}" alt="Flower Store" width="220" height="105" /></apex:outputLink>
+        </div>
+        <div style="float:right">
+            <div class="idamessage">Welcome!</div>
+            <div class="topnav"><!--<a href="#">My Account</a> |&nbsp;--><apex:outputLink value="{!$Page.idawcms__IdaPaymentStep1}">My Cart</apex:outputLink> |&nbsp;<apex:outputLink value="{!$Page.idawcms__IdaPaymentStep1}">Checkout</apex:outputLink><!-- | <a href="#">Login</a>--></div>
+            <!--<div class="search">
+                <input name="search" type="text" id="search" value="Keyword Search" onFocus="this.value=''" onkeypress="if(event.keyCode==13){ doSearch()}"/>
+            </div>-->
+            <c:Ida_Horizontal_Menu linkUrl="{!$Page.idawcms__IdaSearch}"/>
+        </div>
+        
+        <br class="clearfloat" />
+        <script type="text/javascript">
+            ddlevelsmenu.setup("ddtopmenubar", "topbar")
+        </script>
+        
+        <apex:pageMessages ></apex:pageMessages>
+    </div>
+    <!-- Header Area Ends -->
+    
+    <!-- Body Area -->       
+    <apex:insert name="body"/>
+    <!-- Body Area Ends -->
+    
+    <!-- Footer Area -->
+    <!--<br class="clearfloat" />
+    <div class="fs_footer">© 2009 Flower Store. All Rights Reserved<br />
+    <a href="#">About Us</a> | <a href="#">Customer Service</a> | <a href="#">Site Map</a> | <a href="#">Search Terms</a> | <a href="#">Advanced Search</a> | <a href="#">Contact Us</a></div>-->
+    <!-- Footer Area Ends -->
+    
+    <site:googleAnalyticsTracking />
+    
+</apex:page>

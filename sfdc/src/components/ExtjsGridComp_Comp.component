@@ -1,0 +1,741 @@
+<apex:component controller="ExtjsCompExt_Cls" allowDML="true">
+    
+    
+    <!-- A Visualforce component implementing an ExtJS4 grid backed by JS Remoting from a controller -->
+    <!-- Jeff Trull 8/10/2011 -->
+    <apex:attribute name="object" type="String" description="sObject to generate a grid for" required="true"/>
+    <apex:attribute name="viewlabel" type="String" description="ListView to generate a grid for" required="true"/>
+    <apex:attribute name="viewfilter" type="String" description="ListView Filter to generate a grid for"/>
+    <apex:attribute name="viewcols" type="String" description="ListView Columns to generate a grid for"/> 
+    <apex:attribute name="viewscope" type="String" description="ListView Scope to generate a grid for"/>    
+    <apex:attribute name="rows" type="int" description="how many rows to display in grid" default="19"/>
+    <apex:attribute name="minimized" type="Boolean" description="whether to initially render the grid in minimized state" default="false"/>
+    <apex:attribute name="title" type="String" description="title of the grid" required="true"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8"/>
+     
+    <style type="text/css">   
+        .x-column-header-text {font-weight: bold; color: #333}
+        .ux-rangemenu-icon {
+            margin-top: 0;
+        }
+        .ux-rangemenu-gt {
+        background-image: url('{!$Resource.ExtJS4}/extjs-4.1.0/examples/ux/grid/images/greater_than.png') !important; 
+        }
+        .ux-rangemenu-lt {
+        background-image: url('{!$Resource.ExtJS4}/extjs-4.1.0/examples/ux/grid/images/less_than.png') !important;
+        }
+        .ux-rangemenu-eq {
+        background-image: url('{!$Resource.ExtJS4}/extjs-4.1.0/examples/ux/grid/images/equals.png') !important;
+        }
+        .icon-add {
+        background:url({!$Resource.ExtJS4}/extjs-4.1.0/examples/shared/icons/fam/add.gif) 0 no-repeat !important; 
+        }
+        .icon-delete {
+        background:url({!$Resource.ExtJS4}/extjs-4.1.0/examples/shared/icons/fam/delete.gif) 0 no-repeat !important;
+        }
+        .x-grid-table {
+        padding: 0px !important;
+        }
+        
+        .ux-filtered-column {
+            background: url({!$Resource.ExtJS4}/extjs-4.1.0/examples/shared/icons/fam/filter-icon.png) !important;  
+            background-repeat:no-repeat !important;
+            background-position:85% 20% !important;
+        }
+        div.OppImageClass img{
+            height:20px;
+            width:20px;
+        }
+    </style>
+    <script>
+    
+    var isACMEnabled = '{!isACMEnabled}';
+    var defaultCurrency = '{!JSENCODE(defaultCurrency)}';
+   // console.log('isACMEnabled>>'+isACMEnabled);
+   // console.log('defaultCurrency>>'+defaultCurrency);
+    //console.log(isACMEnabled + ' >>>>>' +defaultCurrency );
+    Visualforce.remoting.timeout = 120000;
+    var entURL = '{!$Api.Enterprise_Server_URL_280}';
+    var hostUrl = entURL.substring(0, entURL.indexOf('services/Soap'));      
+    
+    // configure whether filter query is encoded or not (initially)
+    var encode = true; // where filtering data to encode in json or not
+    
+    // configure whether filtering is performed locally or remotely (initially)
+    var local = false;
+    Ext.Loader.setPath('Ext.ux', '{!$Resource.ExtJS4}/extjs-4.1.0/examples/ux'); 
+    var toLocation = 0;
+    Ext.require([
+        'Ext.grid.*',
+        'Ext.data.*',
+        'Ext.ux.grid.FiltersFeature',
+        'Ext.toolbar.Paging',
+        'Ext.ModelManager',
+        'Ext.tip.QuickTipManager',
+        'Ext.ux.PagingToolbarResizer',
+        'Ext.tab.*'
+    ]);
+    
+    var filters = {
+        ftype: 'filters',       
+        encode: encode, // json encode the filter query
+        local: local   // defaults to false (remote filtering)        
+    };
+    
+    Ext.data.proxy.Direct.prototype.createRequestCallback =
+        function(request, operation, callback, scope){
+        
+            var me = this;
+            return function(data, event){
+                // supply "data" (properly processed data), not "event", as fourth arg
+                me.processResponse(event.status, operation, request,
+                                   {data: data}, callback, scope);
+        
+            };
+        };
+    
+    
+    // writer to write data to server in json format      
+    Ext.define('Jet.SFDC.writer', {
+        extend: 'Ext.data.writer.Json',
+        alias: 'writer.sfdc',
+        config: {extraParams: undefined},
+        constructor: function(config) {
+            this.callParent([config]);
+        },
+        writeRecords: function(request, data) {
+            this.callParent([request, data]);
+            if ((this.extraParams !== undefined) && (this.extraParams instanceof Object)) {
+                Ext.apply(request.jsonData, this.extraParams);
+            }
+            return request;
+        }});     
+    
+    
+    ExtjsCompExt_Cls.query.directCfg.method.getArgs = Ext.direct.RemotingMethod.prototype.getArgs;
+    ExtjsCompExt_Cls.create.directCfg.method.getArgs = Ext.direct.RemotingMethod.prototype.getArgs;
+    ExtjsCompExt_Cls.updat.directCfg.method.getArgs = Ext.direct.RemotingMethod.prototype.getArgs;
+    ExtjsCompExt_Cls.delet.directCfg.method.getArgs = Ext.direct.RemotingMethod.prototype.getArgs;
+    
+    Ext.Date.parseFunctions["SFDC"] = function(v) {
+        if ((v == null) || (v == ''))
+            return null;
+        date_as_sent = new Date(parseInt(v));
+        return new Date(date_as_sent.getUTCFullYear(),
+                        date_as_sent.getUTCMonth(),
+                        date_as_sent.getUTCDate());
+    };
+    Ext.Date.parseFunctions["m/d/Y"] = function(v) {
+               if ((v == null) || (v == ''))
+                   return null;
+               date_as_sent = new Date(parseInt(v));
+               return new Date(date_as_sent.getUTCFullYear(),
+                                 date_as_sent.getUTCMonth(),
+                                 date_as_sent.getUTCDate());
+   };
+    // not necessary to define a parseFunction here as SFDC seems happy to accept JSON date format
+    
+    var fieldlist;
+    var modfieldlist = new Array();
+    var fields = '{!viewcols}';
+    if ((fields == null) || (fields == '') || (fields == '[]')) {
+        Ext.Msg.alert('no fields were supplied to this component');
+        //return;
+    }
+    if (fields.substr(0, 1) == '[') {
+        // a fieldset - remove brackets and split on comma+space
+        fieldlist = fields.substr(1, fields.length - 2).split(', ');
+    } else {
+        fieldlist = fields.split(',');
+    }
+    
+    var tabpanel;
+    
+    (function() {  // protect global namespace (and other grids) from stuff local to us
+        ExtjsCompExt_Cls.describeFields('{!object}',fieldlist,
+                                    function(fieldData, e) {   
+                                        if (!e.status) {
+                                            Ext.Msg.alert('Server error', e.message);
+                                            return;
+                                        } 
+                                        
+                                       // define a Model using the information returned from the SObject describe call
+                                        var extfields = []; 
+                                        var dateTypeMap = {};                   
+                                        //console.log(fieldlist.indexOf('probability'));
+                                        if (fieldlist.indexOf('Id') == -1) {
+                                            extfields.push({
+                                                name: 'Id',
+                                                // Workaround: in Ext 3 (nonexistent) id property was removed from phantom records
+                                                persist: false  // make sure we don't try to output this on create.
+                                            }); // always include ID in the store
+                                        }
+                                        for (var i = 0; i < fieldData.length; i++) {
+                                            //console.log('===============fieldData================');
+                                            //console.log(fieldData[i]);
+                                            var field = {name: fieldData[i].name, type: fieldData[i].fieldType};
+                                            //console.log(fieldData[i]);
+                                            if (fieldData[i].fieldType == "datetime") {
+                                                field.dateFormat = "time"; 
+                                                field.type = "date";
+                                                dateTypeMap[fieldData[i].name] = fieldData[i].fieldType; // dateTypeMap for date and datetime fields
+                                            } else if (fieldData[i].fieldType == "date") {                            
+                                                field.type = "date";
+                                                field.dateFormat = "m/d/Y";   /* commented to use m/d/y date format    // use special format defined above*/
+                                                dateTypeMap[fieldData[i].name] = fieldData[i].fieldType;
+                                            } else if (fieldData[i].fieldType == "double" || fieldData[i].fieldType=="percent") {
+                                                field.type = "float";
+                                            } else if (fieldData[i].fieldType == "boolean") {
+                                                field.type = "bool";
+                                            } else if ((fieldData[i].fieldType == "integer") || (fieldData[i].fieldType == "currency") || (fieldData[i].fieldType == "boolean")) {
+                                                field.type = fieldData[i].fieldType;
+                                            } else if (fieldData[i].fieldType == "reference") {
+                                                fieldlist.push(fieldData[i].relatedField);                           
+                                            } else {
+                                                field.type = "string";
+                                            }
+                                            if (field.name == 'Id') {
+                                                field.persist = false;
+                                            }
+                                            //Todo ---------------
+                                            if(fieldData[i].modifiable){
+                                                modfieldlist.push(fieldData[i].name);    
+                                            }
+                                            // TODO add validations (list of valid values, regex, min/max) if possible
+                                            // known possible checks: precision, scale, updateable/createable, max length for strings
+                                            
+                                            extfields.push(field);
+                                            
+                                        }
+                                        
+                                        // remove extra field from fieldlist
+                                        //console.log(fieldlist.indexOf('probability'));
+                                        fieldlist = removeExtraFields(fieldlist);  
+                                        //console.log(fieldlist.indexOf('probability'));
+                                        // TODO add associations to other models
+                                        var modelName = Ext.String.capitalize("{!object}");  
+                                        //console.log('==========Fields'+'{!viewfilter}');
+                                        //console.log(fieldlist);                     
+                                        var extraParams = {sobjname: '{!object}', fields: fieldlist.join(','), queryfilter: '{!viewfilter}', queryscope: '{!viewscope}', fieldTypeMap : dateTypeMap};    // will be sent along with start, limit, etc.                                      
+                                        var writeParams = {sobjname: '{!object}', fields: modfieldlist.join(',')};    // will be sent along with start, limit, etc.                                      
+                                       //console.log(writeParams);
+                                        // console.log(extraParams);
+                                       //  console.log('==========Fields'+'{!viewfilter}');
+                                        Ext.define(modelName, {
+                                            
+                                            extend: 'Ext.data.Model',                                            
+                                            fields: extfields,
+                                            idProperty: 'Id',
+                                            proxy: {
+                                                type: 'direct',
+                                                api: {read:     ExtjsCompExt_Cls.query,
+                                                      create:   ExtjsCompExt_Cls.create,
+                                                      update:   ExtjsCompExt_Cls.updat,
+                                                      destroy:  ExtjsCompExt_Cls.delet
+                                                     },
+                                                limitParam: 'recordCount',   // because "limit" is an Apex keyword
+                                                sortParam: 'sortParams',     // because "sort" is a keyword too
+                                                pageParam: undefined,        // suppress sending "page", we don't need it                           
+                                                reader: {type: 'json',
+                                                         root: 'records',
+                                                         messageProperty: 'errorMessage'
+                                                        },
+                                                writer: { type: 'sfdc',
+                                                         root: 'records',
+                                                         writeAllFields: false,   // otherwise empty fields will transmit as empty strings, instead of "null"/not present
+                                                         extraParams: writeParams,
+                                                         allowSingle: false,   // need to always be an array for code simplification
+                                                         encode:  false        // docs say "set this to false when using DirectProxy"
+                                                        },       
+                                                listeners: {
+                                                
+                                                    exception: {fn: function(proxy, response, operation) {
+                                                        
+                                                        // TODO: some errors are still not propagated correctly to the user by this code...
+                                                        // investigation needed
+                                                        if (response.data) {
+                                                        
+                                                            if (response.data.errorMessage) {
+                                                                // my custom field is present; let's use it
+                                                                Ext.Msg.alert('Error', response.data.errorMessage);
+                                                            } else {
+                                                                Ext.Msg.alert('Error', operation.action + ' failed: ' + response.data.message);
+                                                            }
+                                                        }
+                                                    }
+                                                               }},
+                                                               
+                                                extraParams: extraParams
+                                            }}); 
+                                        
+                                        var pagesize = parseInt('{!rows}'); // otherwise we end up with a string value, which subtly fails
+                                        
+                                         
+                                        /***** Extjs data store - start ******/
+                                        
+                                        
+                                        // create a store that uses the Model
+                                        
+                                        var store = new Ext.data.Store({
+                                            model: Ext.String.capitalize("{!object}"),
+                                            pageSize: pagesize,
+                                            remoteSort: true,
+                                            remoteFilter:true,
+                                            autoLoad: {!!minimized},
+                                            // Instead of using store's "autoSync" feature, sync to server on update and remove,
+                                            // but not add/create, as the initial record will be blank and probably fail validation
+                                            listeners: {
+                                                remove: {fn: function() {
+                                                    store.sync();
+                                                    store.load();
+                                                    
+                                                }},
+                                                update: {fn: function() {
+                                                    store.sync();
+                                                }}
+                                            }});
+                                            //console.log('-----data----');
+                                        //console.log(store);
+                                        /***** ExtJS data store - end ******/     
+                                        
+                                        store.sort('CreatedDate', 'DESC');
+                                        // and a grid that uses the Store
+                                        // define its columns using previously accessed metadata
+                                        
+                                        
+                                        /*** ExtJs columns - start ****/ 
+                                        
+                                        
+                                        var columns = [];
+                                        var columnMap = {};
+                                        var fieldMap = {};
+                                        for (var i = 0; i < fieldData.length; i++) {
+                                        
+                                            
+                                            var collabel = fieldData[i].label;
+                                            
+                                            /** set up column width **/                        
+                                            var winwidth =  (Ext.getBody().getWidth(true)-280)/(fieldData.length);
+                                            var colwidth;
+                                            
+                                            if(winwidth > 120){
+                                                colwidth =  winwidth;  
+                                            } else {
+                                                colwidth = 120;    
+                                            }
+                                            /** set up column width **/  
+                                            
+                                            
+                                            var col = {
+                                               
+                                                dataIndex: fieldData[i].name,
+                                                text: fieldData[i].label,
+                                                sortable: fieldData[i].sortable,
+                                                filterable: fieldData[i].filterable,                                                    
+                                                width: colwidth, 
+                                                hidden: fieldData[i].hidden 
+                                            }
+                                            columnMap[fieldData[i].name] = fieldData[i].label;
+                                            fieldMap[fieldData[i].name] = fieldData[i];
+                                            if(fieldData[i].name == "CaseNumber") {
+                                                col.renderer  = function(myValue, myDontKnow, myRecord) {                            
+                                                    var recordURL = hostUrl + myRecord.data.Id;
+                                                    return '<a href="' + recordURL+'" target="_blank">'+ myRecord.data.Name + '</a>';
+                                                }
+                                                    }
+                                            
+                                            else if(fieldData[i].name == "Name") {
+                                                col.renderer  = function(myValue, myDontKnow, myRecord) { 
+                                                    //console.log('------------------');
+                                                    //console.log(myRecord);
+                                                    //console.log(myDontKnow) 
+                                                    //console.log(myValue)                                                                             
+                                                    var recordURL = hostUrl + myRecord.data.Id;
+                                                    return '<a href="' + recordURL+'"  target="_blank">'+ myRecord.data.Name + '</a>';
+                                                }
+                                            }
+                                            
+                                            else if(fieldData[i].fieldType == "reference") {
+                                                col.dataIndex = fieldData[i].relatedField;
+                                                columnMap[fieldData[i].relatedField] = fieldData[i].label;
+                                                
+                                                col.renderer  = function(myValue, metadata, myRecord, rowIndex, colIndex, doctorOrderStore) { 
+                                                    var reffield = fieldData[colIndex].name;
+                                                    var relObj = fieldData[colIndex].relationName;
+                                                    /*try{ 
+                                                    return myRecord.raw[relObj][fieldData[colIndex].relatedField.split('.')[1]];
+                                                    }catch(e){}*/                                                                
+                                                    if(myRecord.data[reffield] && myRecord.data[reffield] != '' && myRecord.raw[relObj]){ 
+                                                        
+                                                        var recordURL = hostUrl + myRecord.raw[relObj]['Id'];                               
+                                                        return '<a href="' + recordURL+'" target="_blank">'+ myRecord.raw[relObj][fieldData[colIndex].relatedField.split('.')[1]] + '</a>';
+                                                        
+                                                    }
+                                                }  
+                                             }
+                                            
+                                            // use data type from above to determine type of Editor and xtype to use
+                                            else if ((fieldData[i].fieldType == "picklist")) { 
+                                                //console.log(fieldData[i].hasPickListValues);
+                                                if(fieldData[i].hasPickListValues)
+                                                {
+                                                    var optionarr = [];
+                                                    for (var j=0;j<fieldData[i].picklistValues.length; j++) {
+                                                        var temparr = [];
+                                                        temparr.push(fieldData[i].picklistValues[j][1], fieldData[i].picklistValues[j][0]);
+                                                        optionarr.push(temparr);
+                                                    } 
+                                                    
+                                                    col.filter = {
+                                                        type: 'list',
+                                                        options: optionarr                          
+                                                    }
+                                                }
+                                                   
+                                           }
+                                           else if ((fieldData[i].fieldType == "currency")) {
+                                                                                            col.xtype = 'numbercolumn';
+                                                                                            
+                                                col.renderer = function(myValue, myDontKnow, myRecord) { 
+                                                    var setDefaultCurrencyValue = false;
+                                                     //console.log(col.text);
+                                                    //console.log('isACMEnabled >> '+isACMEnabled);
+                                                   // console.log('myRecord.data.CurrencyIsoCode>> '+myRecord.data.CurrencyIsoCode);                                                    
+                                                   // console.log('defaultCurrency >> '+defaultCurrency );                                                    
+                                                    
+                                                    if(isACMEnabled == 'true'){
+                                                        //console.log('In ACM enabled');
+                                                        var currencyACMTemp = myRecord.data.CurrencyIsoCode;
+                                                        if(currencyACMTemp != null && currencyACMTemp != ''){
+                                                            //console.log('In ACM enabled - if');
+                                                            return Ext.util.Format.currency(myValue, currencyACMTemp + ' ');
+                                                        }
+                                                        else{
+                                                            //console.log('In ACM enabled - else');
+                                                            setDefaultCurrencyValue = true;
+                                                        }
+                                                    }else{
+                                                        //console.log('In else of ACM enabled');
+                                                        setDefaultCurrencyValue = true;
+                                                    }
+                                                    
+                                                    if(setDefaultCurrencyValue)
+                                                    {
+                                                        //var defaultCurrency = '{$!UserInfo.getDefaultCurrency()}';
+                                                        //alert('asdg '+($!UserInfo.getDefaultCurrency()));
+                                                        //console.log('In setDefaultCurrencyValue');
+                                                        if(defaultCurrency != null && defaultCurrency != '')
+                                                        {
+                                                            //console.log('In setDefaultCurrencyValue - if');
+                                                            return Ext.util.Format.currency(myValue, defaultCurrency + ' ');
+                                                        }
+                                                        else
+                                                        {
+                                                            //console.log('In setDefaultCurrencyValue - else');
+                                                            return Ext.util.Format.currency(myValue);
+                                                        }
+                                                    }
+                                                    //return Ext.util.Format.currency(myValue);
+                                                    /*if(myValue != null){  
+                                                        //console.log(myRecord);
+                                                        //console.log('>>>>>--'+myValue);
+                                                        //console.log('-----------------');
+                                                        var cur = myValue.toString();
+                                                        //console.log('--------cur---------'+cur);
+                                                        return Ext.util.Format.currency(cur);
+                                                    }                                                   
+                                                    //console.log(myRecord); 
+                                                    if(myValue != null && myValue != ''){
+                                                        //console.log('>>>>>--'+parseFloat(myValue).toFixed(2));
+                                                        var cur = myValue;
+                                                        //console.log('<<<<<--'+cur);
+                                                        
+                                                    }
+                                                    //return myValue;*/
+                                                }
+                                               
+                                           }
+                                            else if ((fieldData[i].fieldType == "integer") || (fieldData[i].fieldType == "double") || (fieldData[i].fieldType == "percent")) {
+                                                col.xtype = 'numbercolumn';
+                                                if (fieldData[i].fieldType == "integer") {
+                                                    // do not show decimals
+                                                    col.format = '0,000';
+                                                }
+                                            } else if (fieldData[i].fieldType == "boolean") {
+                                                col.xtype = 'booleancolumn';
+                                                col.trueText = 'Yes';
+                                                col.falseText = 'No';
+                                            } else if (fieldData[i].fieldType == "date" || fieldData[i].fieldType == "datetime")  {
+                                                col.xtype = 'datecolumn';
+                                                //col.xtype = 'textfield';
+                                            } else if(fieldData[i].fieldType == "string"){                                                
+                                                col.renderer  = function(fieldValue) {                                                
+                                                   if(fieldValue.indexOf('img') != -1 && fieldValue.indexOf('src') != -1 ){ 
+                                                       var imgHref = $(jDecode(fieldValue)).attr('src');                                                       
+                                                       return '<div Id="OppImageId" class="OppImageClass"><a href="'+imgHref +'" target="_blank" title="Click to view large image!">'+jDecode(fieldValue)+'</a></div>';
+                                                   }else{
+                                                       return fieldValue.replace(/(https?:\/\/\S+)/g, '<a href="$1">$1</a>');
+                                                   }
+                                                   function jDecode(str) {
+                                                        return $("<div/>").html(str).text();
+                                                   }
+                                                }  
+                                            }   
+                                            
+                                            
+                                            // set up editors for modifiable fields
+                                            if (fieldData[i].modifiable && fieldData[i].fieldType != "reference") {
+                                                if (fieldData[i].fieldType == "date") {
+                                                    col.editor = {xtype : 'datefield'};
+                                                } else if (fieldData[i].fieldType == "boolean") {
+                                                    // ideally would use checkbox here, but it seems Ext 4 has moved this into examples...
+                                                    // there is a "checkboxfield", but then it shows up as Yes/No until you click to edit, which is ugly
+                                                    var options = [[true, 'Yes'], [false, 'No']];
+                                                    if (fieldData[i].nillable) {
+                                                        options.push(['', null]);
+                                                    }
+                                                    col.editor = {xtype : 'combobox',
+                                                                  store : options};
+                                                } else if (fieldData[i].fieldType == "picklist") {
+                                                    col.editor = {xtype : 'combobox',
+                                                                  store : fieldData[i].picklistValues};
+                                                } else if ((fieldData[i].fieldType == "integer") || (fieldData[i].fieldType == "double")) {
+                                                    col.editor = {xtype : 'numberfield'};
+                                                }else if ((fieldData[i].fieldType == "currency")) {
+                                                    col.editor = {xtype : 'numberfield'}; 
+                                                }
+                                                else {
+                                                    col.editor = {xtype : 'textfield'};
+                                                }
+                                                col.editor.allowBlank = fieldData[i].nillable;
+                                                if (fieldData[i].fieldType == "double") {
+                                                    col.editor.allowDecimals = true;
+                                                }
+                                                // validators for special text field types
+                                                if ((fieldData[i].fieldType == "url") || (fieldData[i].fieldType == "email")) {
+                                                    col.editor.vtype = fieldData[i].fieldType;
+                                                }
+                                                 
+                                                
+                                            }    
+                                            columns.push(col);
+                                        }
+                                        
+                                        /*** ExtJs columns - end  ****/
+                                        
+                                        /*** ExtJs grid - start ****/  
+                                        Ext.onReady(function() {  // defer creation of UI elements
+                                        
+                                            var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                                                clicksToEdit: 2 // to more easily distinguish editing from row selection ----------modelName
+                                            });
+                                            
+                                            
+                                            var grid = new Ext.grid.GridPanel({//Ext.create('Ext.grid.Panel', {
+                                                id : 'maingrid',
+                                                title: '{!title}',
+                                                store: store,
+                                                layout:'fit',       
+                                                columns: columns,
+                                                selModel: {xtype : 'rowmodel',mode : 'MULTI'},
+                                                collapsed: {!minimized},
+                                                
+                                             listeners: {
+                                                        // if we begin minimized, load upon expansion
+                                                        expand: function() {
+                                                            store.load();
+                                                        },
+                                                        itemdblclick: function(grid, record, item, index, e, eOpts){
+                                                            window.open('/'+record.internalId+'/e?retURL='+encodeURI('/apex/OppFilterPage'), '_top');
+                                                        },
+                                                    
+                                                   columnhide : function(ct, column, eOpts){
+                                                          var columnlist = '';
+                                                          
+                                                          Ext.each(ct.items.items, function(item) {
+                                                              if(!item.hidden){
+                                                                  columnlist  +=  item.dataIndex + ',';       
+                                                              }                                                              
+                                                          }); 
+                                                            ExtjsCompExt_Cls.setDefaulColumns(columnlist,
+                                                            function(result, event){
+                                                                if(event.type === 'exception') {
+                                                                    ////console.log("exception");
+                                                                    ////console.log(event); 
+                                                                } 
+                                                            }); 
+                                                       
+                                                    }, 
+                                                    columnshow : function(ct, column, eOpts){
+                                                        var columnlist = ''; 
+                                                          Ext.each(ct.items.items, function(item) {
+                                                              if(!item.hidden){
+                                                                  columnlist += item.dataIndex + ',';       
+                                                              }
+                                                              
+                                                          });
+                                                          
+                                                          ExtjsCompExt_Cls.setDefaulColumns(columnlist,
+                                                            function(result, event){
+                                                                if(event.type === 'exception') {
+                                                                    ////console.log("exception");
+                                                                    ////console.log(event); 
+                                                                } 
+                                                            }); 
+                                                            
+                                                    },
+                                                                                                        
+                                                    columnmove:function(container, coulmn, from , to){ 
+                                                    var item1 = '';
+                                                    for(var item = 0;item < container.items.length;item++){
+                                                        if(!container.items.get(item).hidden){
+                                                            if(item == 0){
+                                                                item1 += container.items.get(item).dataIndex;//.replace('','');
+                                                            }else{
+                                                                item1 += ','+container.items.get(item).dataIndex;//.replace('','');
+                                                            } 
+                                                        }
+                                                    }
+                                                    
+                                                    ExtjsCompExt_Cls.setDefaulColumns(item1,
+                                                      function(result, event){
+                                                          if(event.type === 'exception') {
+                                                              //console.log("exception");
+                                                              //console.log(result); 
+                                                          } 
+                                                      }); 
+                                                      toLocation = to; 
+                                                    }, 
+                                                    
+                                                    addRecord : function(gridobj, rec){
+                                                    
+                                                        var store = gridobj.store;
+                                                        ////console.log(store);
+                                                        
+                                                        if (Ext.isArray(rec)) {
+                                                            Ext.each(rec, function(rObj, ind) {
+                                                                if (! (rObj instanceof Ext.data.Record)) {
+                                                                    rec[ind] = new this.store.recordType(rObj);
+                                                                }
+                                                            });
+                                                        }
+                                                        
+                                                        else if (Ext.isObject(rec) && ! (rec instanceof Ext.data.Record)) {
+                                                            
+                                                            rec = new this.store.model(rec);
+                                                        }
+                                                       
+                                                        var sortInfo = store.sorters.items[0] 
+                                                        ////console.log(store.sorters);
+                                                        ////console.log(sortInfo);
+                                                        
+                                                        store.load();
+                                                        store.add(rec);
+                                                        store.sort(sortInfo.property,sortInfo.direction);
+                                                      }
+                                                    }, 
+                                                   
+                                                /* enable editing
+                                                plugins: [rowEditing], */  
+                                                
+                                                // paging toolbar at bottom
+                                                bbar: Ext.create('Ext.PagingToolbar', {
+                                                    store: store,
+                                                    displayInfo: true,
+                                                    displayMsg: 'Displaying objects {0} - {1} of {2}',
+                                                    emptyMsg: 'no records found',
+                                                    id:'pagingbar',
+                                                    plugins : [{
+                                                        ptype: 'pagingtoolbarresizer', 
+                                                        options : [ 5, 10, 15, 20, 25, 50],
+                                                        width :50
+                                                    }]  
+                                                }),
+                                                
+                                                
+                                                // add add/delete button at top of grid  -->
+                                                
+                                                dockedItems: [{
+                                                    xtype: 'toolbar',
+                                                    items: [{   text: 'Add',
+                                                             iconCls: 'icon-add',
+                                                             handler: function(){                                                             
+                                                                 /***
+                                                                 *empty record
+                                                                 *TODO insert default field values, if any (Field can take one, will that do?)
+                                                                 *store.insert(0, Ext.create(modelName, {}));
+                                                                 *rowEditing.startEdit(0, 0);
+                                                                 **/
+                                                                 window.open('/006/e?retURL='+encodeURI('/apex/OppFilterPage'), '_blank');
+                                                             }
+                                                            },'->',{
+                                                                text: 'Clear Filter Data',
+                                                                handler: function () {
+                                                                    grid.filters.clearFilters();
+                                                                } 
+                                                            }]
+                                                    
+                                                }],       
+                                                autoHeight: true,  /*460*/
+                                                loadMask: true,
+                                                features: [filters],                           
+                                                /*renderTo: '{!$Component.myGrid}',*/
+                                                layout: 'fit'                  
+                                            });
+                                          
+                                            overrideFilters();
+                                                                                        
+                                            // disable delete button if no row is selected
+                                            grid.getSelectionModel().on('selectionchange', function(selModel, selections){
+                                                if(selections != null && selections.length != ''){
+                                                    grid.down('#delete').setDisabled(selections.length === 0);
+                                                    if(selections.length > 0){
+                                                        var seloppId = selections[0].internalId;
+                                                        /*document.getElementById('thepage:theForm:extSelOppId').value = seloppId;
+                                                        reloadTabPanel();*/
+                                                    }
+                                                }
+                                            });
+                                            
+                                             tabpanel = Ext.create('Ext.tab.Panel', {
+                                                renderTo: '{!$Component.myGrid}',
+                                                activeTab: 0,     // first tab initially active
+                                                loadMask : true,
+                                                defaults :{
+                                                    bodyPadding: 0                                                    
+                                                },
+                                                layout:'fit',
+                                                items: [grid,
+                                                    {
+                                                    title : 'Opportunity Pipeline',
+                                                    xtype: 'box',
+                                                    id : 'pipelinetab',
+                                                    style : 'max-height:560px;background-color:#cccccc;',
+                                                    layout:'fit',                                                        
+                                                        autoEl: {
+                                                            tag: 'iframe',
+                                                            layout:'fit',
+                                                            height: 650,
+                                                            src: '/apex/PipelineView?params={!viewfilter}',
+                                                            style : 'border : 0px;max-height:560px;'
+                                                        },
+                                                     autoScroll : true     
+                                                        
+                                                    }
+                                                ]
+                                            });
+                                            
+                                            Ext.EventManager.onWindowResize(tabpanel.doLayout, tabpanel);
+                                            
+                                        });
+                                        /*** ExtJs grid - end ****/  
+                                    });
+                                     
+         })();  // end IIFE
+    
+    </script>
+    
+    <apex:outputPanel id="myGrid" layout="block" />
+    
+</apex:component>

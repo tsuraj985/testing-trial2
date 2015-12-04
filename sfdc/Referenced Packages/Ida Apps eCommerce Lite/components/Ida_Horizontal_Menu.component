@@ -1,0 +1,30 @@
+<apex:component controller="idawcms.Ida_General_Component_Controller">
+    <style type="text/css">
+        .idaSubMenu li
+        {
+            margin-left: 0px;
+        }
+    </style>
+    <apex:attribute name="linkUrl" type="String" description="the url of the link page"/>
+    <div id="ddtopmenubar" class="mainnav">
+        <apex:variable var="i" value="{!0}" />
+        <ul >
+            <apex:repeat value="{!horizontalMenus}" var="menu">
+                <li>
+                    <a href="{!IF(AND(menu.Link <> null, menu.Link <> ''), menu.Link, linkUrl&'?menuItem='&URLENCODE(menu.Name))}" rel="ddsubmenu{!FLOOR(i)}" title="{!menu.ToolTip}">{!menu.Name}</a>
+                    <ul id="ddsubmenu{!FLOOR(i)}" class="ddsubmenustyle">
+                        <apex:repeat value="{!menu.MenuItems}" var="item">
+                            <li style="margin-left: 0px;">
+                                <a href="{!IF(AND(item.Link <> null, item.Link <> ''), item.Link, linkUrl&'?menuItem='&URLENCODE(item.Name))}" title="{!item.ToolTip}">{!item.Name}</a>
+                                <apex:dataList value="{!item.MenuItems}" var="subItem" rendered="{!NOT(ISNULL(item.MenuItems))}" styleClass="idaSubMenu">
+                                    <a href="{!IF(AND(subItem.Link <> null, subItem.Link <> ''), subItem.Link, linkUrl&'?menuItem='&URLENCODE(subItem.Name))}" title="{!subItem.ToolTip}">{!subItem.Name}</a>
+                                </apex:dataList>
+                            </li>
+                        </apex:repeat>
+                    </ul>
+                </li>
+                <apex:variable var="i" value="{!i+1}" />
+            </apex:repeat>
+        </ul>
+    </div>
+</apex:component>

@@ -1,0 +1,240 @@
+<apex:page controller="idawcms.Ida_Product_Detail_Controller" showHeader="false" sidebar="false" standardStylesheets="false" id="productDetail">
+    <head>
+        <script language="javascript" type="text/javascript">
+            function showdvTab(index, totalLength)
+            {
+                var tab_ID = '';
+                var tab_Detail_ID = '';
+                for(var i = 0; i < totalLength; i++)
+                {
+                    tab_ID = 'dvTab' + i;
+                    tab_Detail_ID = 'dvTab' + i + '_Details';
+                    if(i == index)
+                    {
+                        document.getElementById(tab_Detail_ID).style.display = '';
+                        document.getElementById(tab_ID).className = 'active';
+                    }
+                    else
+                    {
+                        document.getElementById(tab_Detail_ID).style.display = 'none';
+                        document.getElementById(tab_ID).className = '';
+                    }
+                }
+            }
+            
+            function getRadioId()
+            {
+                var upgrades = document.getElementsByName("radio");
+                for(var i = 0; i < upgrades.length; i++)
+                {
+                    if(upgrades[i].checked)
+                    {
+                       return upgrades[i].id;
+                    }
+                }
+                return "";
+            }
+            function getCookieValue(key)
+            {
+                var arrCookie = document.cookie.split(";");
+                for(var i = 0; i < arrCookie.length; i++)
+                {
+                    var arr = arrCookie[i].split("=");
+                    if(arr[0].trim() == key)
+                    {
+                        if(typeof arr[1] == "undefined")
+                        {
+                            return "";
+                        }
+                        else
+                        {
+                            return arr[1];
+                        }
+                    }
+                }
+                return '';
+            }
+            String.prototype.trim = function()
+            {
+                 return this.replace(/(^\s*)|(\s*$)/g, "");
+            }
+            
+            function addProductToCookies()
+            {
+                var productId;
+                var radioId;
+                var unitPrice;
+                var catalogType;
+                var zipCode;
+                var arrivalDate;
+                
+                try
+                {
+                    productId = "{!$CurrentPage.parameters.id}";
+                    radioId = getRadioId();
+                    unitPrice = document.getElementById(radioId+"_price").innerHTML;
+                    unitPrice = unitPrice.replace("$","");
+                    catalogType = document.getElementById(radioId+"_type").innerHTML;
+                    zipCode = document.getElementById("zipCodeText").value;
+                    arrivalDate = document.getElementById("productDetail:siteTemplate:formDate:arrivalDate").value;
+                }
+                catch(err)
+                {
+                    var result = window.confirm("For some reasons(this product no have upgrade and so on), the program can't get the element from this page,so this product can't be add to the cart. continue to next step?", "sure", "cancel");
+                    if(result == false)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                
+                var productInfo = productId.trim() + "*" + catalogType.trim() + "*" + unitPrice.trim() + "*" + zipCode.trim() + "*" + arrivalDate.trim() + ",";
+                var shoppingCart = getCookieValue("idaShoppingCart");
+                if(shoppingCart.indexOf(productId) == -1)
+                {     
+                    shoppingCart+= productInfo;
+                }
+                else
+                {
+                    var tempProducts = shoppingCart.split(",");
+                    var tempfindProductStr;
+                    for(var i = 0; i < tempProducts.length; i++)
+                    {
+                        if(tempProducts[i].indexOf(productId) != -1)
+                        {
+                            tempfindProductStr = tempProducts[i];
+                            break;
+                        }
+                    }
+                    tempfindProductStr = tempfindProductStr + ",";
+                    shoppingCart = shoppingCart.replace(tempfindProductStr, productInfo);
+                }    
+                
+                if(checkZipInput())
+                {
+                    document.cookie = "idaShoppingCart=" + shoppingCart;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+             }
+             
+             function checkZipInput()
+             {
+                 var zipInput = document.getElementById("zipCodeText").value;
+                 if(zipInput == null || zipInput == "" || typeof zipInput == "undefined")
+                 {
+                    document.getElementById("zipRequired").style.color = "red"; 
+                    alert("You must input zip code.");
+                    return false;
+                 }
+                 return true;
+             }
+            
+        </script>
+    </head>
+    <apex:composition template="idawcms__IdaSiteTemplate">
+        <!-- Content Area -->
+        <apex:define name="body">
+            <div class="fs_contentarea">
+                <!-- <div class="fs_bcru"><a href="index.html">Home</a> ? <a href="search.html">Birthday Gift and Flowers</a> ? Autumn Fire Tulip Bouquet</div> -->
+                <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                    <tr>
+                        <td width="332" valign="top">
+                            <div>
+                                <div class="largeimg"><img src="{!product.Ida_Product_Image_Full_Size__c}" width="330" height="370" /></div>
+                                <div class="largeimg_title">{!product.Name}</div>
+                            </div>
+                            
+                            <div class="fs_tabs">
+                                <apex:variable value="{!0}" var="i"/> 
+                                <apex:repeat value="{!tabCatalogs}" var="item">
+                                    <a href="#" id="dvTab{!FLOOR(i)}" class="{!IF(i=0, 'active', '')}" onclick="showdvTab({!FLOOR(i)}, {!tabCatalogs.size}); return false;">{!item.Title}</a>
+                                    <apex:variable value="{!i+1}" var="i"/>
+                                </apex:repeat>
+                            </div>
+                            
+                            <apex:variable value="{!0}" var="i"/>
+                            <apex:repeat value="{!tabCatalogs}" var="item">
+                                <div id="dvTab{!FLOOR(i)}_Details" style="display: {!IF(i=0, 'block', 'none')}">
+                                    <div class="fs_tabbox">
+                                        <apex:outputText value="{!item.LongText}" escape="false"></apex:outputText>
+                                    </div>
+                                </div>
+                                <apex:variable value="{!i+1}" var="i"/>
+                            </apex:repeat>
+                        </td>
+                         
+                        <td valign="top">
+                            <div class="productDetails">
+                                <div class="title">Check Availability</div>
+                                <div class="subtitle">1. Select your product option</div>
+                                
+                                <table width="100%" border="0" cellpadding="5" cellspacing="0">
+                                    <apex:variable value="{!0}" var="i"/>
+                                    <apex:repeat value="{!upgradeCatalogs}" var="item">
+                                        <tr>
+                                            <td width="15" valign="center"><input name="radio" type="radio" value="radio" id="radio{!FLOOR(i)}" /></td>
+                                            <td width="83" valign="center"><img src="{!item.Image}" width="83" height="93" /></td>
+                                            <td valign="center"> <span id="radio{!FLOOR(i)}_price">
+                                                <apex:outputText value="{0, number, $#,###,###.00}">
+                                                    <apex:param value="{!item.Price}"/>
+                                                </apex:outputText> </span>
+                                                &nbsp;-&nbsp;<strong><span id="radio{!FLOOR(i)}_shortText">{!item.ShortText}</span></strong><br /><span id="radio{!FLOOR(i)}_longText">{!item.LongText}</span> 
+                                                <span id="radio{!FLOOR(i)}_type" style="display:none;">{!item.Ctype}</span>
+                                            </td>
+                                            <script type="text/javascript">
+                                                var elements = document.getElementsByName('radio');
+                                                elements[0].checked = 'true';
+                                            </script>
+                                        </tr>
+                                        <apex:variable var="i" value="{!i+1}"/>
+                                    </apex:repeat>
+                                </table>
+                                
+                                <div class="subtitle">2. Where are you sending it?</div>
+                                <div class="content">
+                                    ZIP Code*<input type="text" name="zipCodeText" id="zipCodeText" onblur="checkZipInput();" />
+                                    <span id="zipRequired">(Required)</span><br /><br />
+                                    <a href="http://zip4.usps.com/zip4/welcome.jsp" target="_blank" onclick="popupw=window.open('http://zip4.usps.com/zip4/welcome.jsp','FindZip','toolbar=no,resizable=yes,scrollbars=yes,width=600,height=300,top=0,left=50');return false;">Need help finding a ZIP code -   click here ? </a>
+                                </div>
+                                
+                                <div class="subtitle">3. When should it arrive?</div>
+                                <div class="content">
+                                    <apex:form id="formDate">
+                                     <div id="dateDiv" style="margin-left:10px;">
+                                        <apex:inputfield value="{!temp.idawcms__Ida_Product_Arrival_Date__c}" style="width:100px;" styleClass="ddd" id="arrivalDate"/>
+                                     </div>
+                                    </apex:form>
+                                    <br />
+                                    <br />
+                                    <!--<a href="#">Upcoming Holiday Dates</a>-->
+                                    <div align="right">
+                                        <apex:outputLink value="{!$Page.idawcms__IdaPaymentStep1}" onclick="return addProductToCookies();">
+                                            <img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/btn_addtocart.gif')}" alt="Add to Cart" width="160" height="35" />
+                                        </apex:outputLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div style="padding:5px 5px 5px 60px">May we also suggest:</div>
+                <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_topbar_full.gif')}" alt="" width="810" height="15" /></div>
+                <div class="searchborders"><c:Ida_Banner bannerType="Product Page" linkUrl="{!$Page.idawcms__IdaProductDetail}" /></div>
+                <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_btmbar_full.gif')}" alt="" width="810" height="15" /></div>
+                
+                <div style="padding:20px 5px 5px 60px">You recently viewed:</div>
+                <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_topbar_full.gif')}" alt="" width="810" height="15" /></div>
+                <div class="searchborders"><c:Ida_Recently_Viewed linkUrl="{!$Page.idawcms__IdaProductDetail}" /></div>
+                <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_btmbar_full.gif')}" alt="" width="810" height="15" /></div>
+            </div>
+        </apex:define>
+        <!-- Content Area Ends -->
+    </apex:composition>
+</apex:page>

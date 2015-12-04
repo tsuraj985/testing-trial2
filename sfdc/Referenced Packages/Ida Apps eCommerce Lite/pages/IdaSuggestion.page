@@ -1,0 +1,7 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="true">
+    <p style="color: red">
+        <strong>
+            You have not installed {!$CurrentPage.parameters.package}, please contact Ida Apps for additional information.
+        </strong>
+    </p>
+</apex:page>

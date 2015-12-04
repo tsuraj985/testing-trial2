@@ -1,0 +1,18 @@
+<apex:page standardController="Account" recordSetVar="Accounts" extensions="show100RecordsCG">
+<apex:form >
+<apex:pageBlock >
+<apex:pageblockButtons location="top">
+<apex:panelGrid Columns="1">
+<apex:commandLink action="{!previous}" value="Previous"/>
+<apex:commandLink action="{!next}" value="Next"/>
+</apex:panelGrid>
+</apex:pageblockButtons>
+        <apex:pageBlockTable value="{!Accounts}" var="acc">
+        <apex:column value="{!acc.Name}"/>
+        <apex:column value="{!acc.AccountNumber}"/>
+        <apex:column value="{!acc.Region__c}"/>
+        </apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+ 
+</apex:page>

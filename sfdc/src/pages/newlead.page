@@ -1,0 +1,35 @@
+<apex:page standardController="Lead" extensions="DataLead">
+    <style>
+        body .bPageBlock .pbBody .dataCol{
+            width:100%;
+        } 
+    </style>
+    <apex:form >
+     <apex:pageblock id="pb1">
+         <apex:pageBlockButtons location="top">
+             <apex:commandButton action="{!onSave}" value="Save" id="save" reRender="pb1,pb2"/>
+             <apex:commandButton value="Cancel" action="{!cancel}"/>
+          </apex:pageBlockButtons> 
+          <apex:pageblocksection title="Lead Information" >
+          
+            <apex:inputfield value="{!LeadObj.Name}"/>
+            <apex:inputField value="{!LeadObj.MobilePhone}"/>
+           <apex:inputField value="{!LeadObj.Fax}"/>
+            <apex:inputField value="{!LeadObj.Phone}"/>
+            <apex:inputField value="{!LeadObj.Title}"/>
+         </apex:pageblocksection>
+         </apex:pageblock>    
+        <apex:pageBlock id="pb2">
+         <apex:pageBlockSection title="Data List">
+          <apex:pageBlockTable value="{!Leads}" var="l" >
+       
+              <apex:column value="{!l.Name}"/>
+              <apex:column value="{!l.MobilePhone}"/>
+              <apex:column value="{!l.Fax}"/>
+              <apex:column value="{!l.Phone}"/>
+              <apex:column value="{!l.Title}"/>
+          </apex:pageBlockTable>   
+         </apex:pageBlockSection>
+         </apex:pageBlock>    
+    </apex:form>
+</apex:page>

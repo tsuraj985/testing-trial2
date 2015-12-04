@@ -1,0 +1,11 @@
+<apex:component controller="idawcms.Ida_General_Component_Controller">
+    <apex:repeat value="{!sections}" var="item">
+        <div class="midfeature">
+            <img src="{!item.Image}" width="50" height="50" align="left" style="margin-right:10px" />
+            <strong>{!item.Name}</strong> - {!item.Text}
+            <div class="readmore_link">
+                <a href="{!item.Link}">Click here for details <img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/readmore_icon.gif')}" width="16" height="16" align="absmiddle" /></a>
+            </div>
+        </div>
+    </apex:repeat>          
+</apex:component>

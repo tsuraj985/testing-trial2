@@ -1,0 +1,30 @@
+<apex:page controller="ActionSupFunController">
+ <apex:form >
+  <apex:actionFunction name="myactionfun"  action="{!actionFunMethod}" reRender="outptText"/><br></br> <br></br> 
+  Input Text <apex:inputText >
+                <apex:actionSupport action="{!actionSupMethod}" event="onclick" reRender="outptText" />
+             </apex:inputText> <br></br>
+     
+Click me to call action function method   <apex:inputcheckbox value="{!isTrue}" >
+                                                <apex:actionSupport status="status123" event="onchange" action="{!actionFunMethod}" reRender="outptText"/>
+                                          </apex:inputcheckbox>
+                                          
+                                          <apex:actionStatus startText="I am Loading.........................................................." id="status123" onstart="showMessage();"></apex:actionStatus>      
+<br></br> <br></br>   
+    <apex:pageBlock >
+        <apex:outputText value="{!Display_This_String}" id="outptText"/>
+    </apex:pageBlock>         
+  <script>
+   function myJavaMethod(){
+   var checkinput = confirm('Are sure you wnat to call action function method?');
+   if(checkinput == true) 
+      myactionfun();
+   else
+       return false;   
+  }
+  function showMessage(){
+      alert('I am inn show message');
+  }
+  </script>
+ </apex:form> 
+</apex:page>

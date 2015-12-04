@@ -1,0 +1,17 @@
+<apex:page controller="scrollableList">
+<apex:pageBlock >
+<apex:outputPanel layout="block" style="overflow:auto;width:750px;height:250px">
+<apex:dataTable value="{!Accounts}" var="Account" styleClass="tableclass" border="1">
+<apex:column headerValue="AccountName">
+<apex:outputText value="{!Account.Name}"/>
+</apex:column>
+<apex:column HeaderValue="AccountNumber">
+<apex:outputText value="{!Account.AccountNumber}"/>
+</apex:column>
+<apex:column headerValue="Phone">
+<apexoutputText value="{!Account.phone}"/>
+</apex:column>
+</apex:dataTable>
+</apex:outputPanel>
+</apex:pageBlock>
+</apex:page>

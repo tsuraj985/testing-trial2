@@ -1,0 +1,181 @@
+<apex:component controller="CalendarController" >
+ <head>
+	    
+	   <link href="{!$Resource.fullCalendarCSS1}" rel="stylesheet" /> 
+	     <link href="{!$Resource.fullCalendarPrintCSS}" rel="stylesheet" media="print" />
+	     <script src="{!$Resource.DateFormat}"></script>
+	      <script src="{!$Resource.momentMinJS}"></script>
+	     
+	    
+	     </head>
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	    <script src="{!$Resource.fullCalendarMinJS1}"></script>
+	    
+	     <style>
+	     #cal-legend { margin-top:-42px;}
+	     .fc-event{border:1px solid #56458c;background-color:#56458c;}
+	     
+	     </style>
+	
+	    
+	    <script>      
+	  
+	        //We need to wrap everything in a doc.ready function so that the code fires after the DOM is loaded
+	        
+	        $(document).ready(function() {   
+	
+		/*fullCalendarCSS*/
+			
+	            $('#calendar').fullCalendar({            
+	                header: {
+	                    left: 'prev,next today',
+	                    center: 'title',
+	                    right: 'month,agendaWeek,agendaDay'
+	                },
+	                eventLimit: true,
+	                views: {
+						        month: {
+						            eventLimit: 5
+						        },
+						        agendaWeek: {
+						            eventLimit: 4 
+						        },
+						         agendaDay: {
+						            eventLimit: 3 
+						        },
+						    },
+					
+	                editable: false,
+	                
+	                events:
+	                [
+	                    //At run time, this APEX Repeat will reneder the array elements for the events array
+	                    <apex:repeat value="{!finalWrapperList}" var="e">
+	                   	 <apex:repeat value="{!e.calEventList}" var="list1">
+	                   		
+	                   		{ 
+	                            title: '{!list1.title}',
+	                            start: '{!list1.startString}',
+	                            end: '{!list1.endString}',
+	                            
+	                             
+	                            allDay: '{!list1.allDay}',
+	                            roomName:'{!list1.roomName}',
+	                            color:'{!list1.roomName}',
+	                            allDay:'true',
+	                            textColor:'white',
+	                            description:'{!list1.urlFor}',
+	                            dayCount : '<b>Count</b> :<span style="color:{!if(list1.countOriginalColor , 'red' ,'black')};">{!list1.totalCount}</span>', 
+	                        	dayVolume : '<b>Volume</b> :<span style="color:{!if(list1.volumeOriginalColor , 'red' ,'black')};"> {!list1.totalVolume}</span>'
+	                        },
+	                    </apex:repeat>
+	                    </apex:repeat>
+	                ],
+	                eventClick: function(calEventForWithoutRoom, jsEvent, view) {
+	                    console.log(calEventForWithoutRoom);
+	                    console.log({!wrapperEventList.size});
+	                    
+	                    popitup("/"+calEventForWithoutRoom.description); 
+	                },
+	                eventRender: function (event, element, view) { 
+	                
+	                	if($("[data-date="+$.fullCalendar.moment(event.start).format('YYYY-MM-DD')+"]").children().hasClass("divToCheck")){
+	                		
+	                	}else {
+	                		console.log(event.start);
+	                		console.log($("[data-date="+$.fullCalendar.moment(event.start).format('YYYY-MM-DD')+"]")[0]);
+	                			$("[data-date="+$.fullCalendar.moment(event.start).format('YYYY-MM-DD')+"]").each(function(index){
+	                					if($(this).hasClass('fc-widget-content'))
+	                						$(this).prepend('<div id="1234" class="divToCheck" style="float:left;">'+event.dayCount+' '+event.dayVolume+' </div>');
+	                			});
+								//$("[data-date="+$.fullCalendar.moment(event.start).format('YYYY-MM-DD')+"]")[0]prepend('<div id="1234" class="divToCheck" style="float:left;">'+event.dayCount+' '+event.dayVolume+' </div>');								                	
+	                	}
+ 						$(element).each(function () { $(this).addClass('dateClass-' + moment(event.start).get('date').toString()); $(this).attr('date-num', moment(event.start).get('date').toString()); });
+
+                   if (view.name == "month") {
+                       // $('.shifts,.tasks,.shiftOut,.shiftIn').hide();
+                       var CellDates = [];
+                       var EventDates = [];
+                       var EventCount = 0, i = 0;
+
+                       $('.fc-view-month').find('.fc-day-number').each(function () {
+                           CellDates[i] = $(this).text();
+                           //                           alert( $(this).text());
+                           i++;
+                       });
+					
+                       for (j = 0; j < CellDates.length; j++) {
+
+                           EventsPerDay = $(".fc-view-month>div>.dateClass-" + CellDates[j]).length;
+                           console.log('@@@@@@@@@@@@@@@@@@@@@@'+EventsPerDay + CellDates[j]);
+                           }}    
+                           
+                           }
+	            });
+	            	             
+	        });
+	        
+	    </script>
+	    
+	    
+	    <!--some styling. Modify this to fit your needs-->
+	    <style>
+	        #cal-options {float:left;}
+	        #cal-legend { float:right;}
+	        #cal-legend ul {margin:0;padding:0;list-style:none;}
+	        #cal-legend ul li {margin:0;padding:5px;float:left;}
+	        #cal-legend ul li span {display:block; height:16px; width:16px; margin-right:4px; float:left; border-radius:4px;}
+	        #calendar {margin-top:20px;}
+	        #calendar a:hover {color:#fff !important;}
+	        #roomSchedule {margin-top:20px;}
+	        #roomSchedule a:hover {color:#fff !important;}
+	         
+	        .fc-event-inner {padding:3px;} 
+	        .event-birthday   {background:#56458c;border-color:#56458c;height:76px; width:16px;}
+	        .event-availableRoom{background:#04B431;border-color:#04B431,height:76px; width:16px;} 
+	        .event-campaign {background:#cc9933;border-color:#cc9933;}
+	        .event-personal {background:#1797c0;border-color:#1797c0;}
+	    </style>
+	     <apex:form >
+	     <script>
+	         
+	     function tttt(){
+	         alert(1);
+	         var xyz = $('[id$="selec"]').val();
+	         if(xyz == 'RoomWith'){
+	             test12();
+	         }
+	         else{
+	             alert(123);
+	         }
+	         alert(xyz);
+	     }
+	     </script>
+	    <apex:sectionHeader title=" Calendar View"/>
+	    
+	    <apex:outputPanel id="calPanel" >
+	        
+	            <div id="cal-legend">
+	               
+	            <div style="clear:both;"><!--fix floats--></div>
+	            </div>
+	            <div id="calendar"></div>
+	            <div id="roomSchedule"></div>
+	        
+	    </apex:outputPanel>
+	    </apex:form>
+	    <script>
+	    
+	        window.onload(function(){
+	            $(".fc-event-inner").bind("onclick",function(){
+	                alert("check");
+	            });
+	       }); 
+	       function popitup(url) {
+	        newwindow=window.open(url,'name','height=700,width=750');
+	        if (window.focus) {newwindow.focus()}
+	        return false;
+		}    
+	 </script>
+</apex:component>

@@ -1,0 +1,336 @@
+<apex:page controller="PipelineController" standardStylesheets="false" sidebar="false" showheader="false" readOnly="true" >
+   <head>
+      <meta charset="utf-8">
+      </meta>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      </meta>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </meta>
+      <meta name="description" content="">
+      </meta>
+      <meta name="author" content="">
+      </meta>
+      <title>sales Force</title>
+      <!-- Bootstrap core CSS -->
+      <link href="{!URLFOR($Resource.Pipeline_Resource, 'css/bootstrap.css')}" rel="stylesheet" />
+      <!-- Bootstrap theme -->
+      <link href="{!URLFOR($Resource.Pipeline_Resource, 'css/bootstrap-theme.min.css')}" rel="stylesheet" />
+      <!-- Custom styles for this template -->
+      <link href="{!URLFOR($Resource.Pipeline_Resource, 'css/theme.css')}" rel="stylesheet" />
+       <script src="{!URLFOR($Resource.Pipeline_Resource, 'js/jquery-1.10.2.min.js')}"></script>
+      <!-- Just for debugging purposes. Don't actually copy this line! -->
+      <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
+      
+      <style>
+      .menu_box ul li{width:146px;}
+      .main_link {background-size: 13px 44px;font-size: 13px;}
+        .li_box{width:144px;}
+        .scroll_box {max-height: 300px; overflow: hidden;}
+        .main_link:hover{text-decoration:none;}
+      </style>
+   </head>
+   <apex:form >
+   <!-- body -->
+   <!-- Fixed navbar -->
+    <div style="overflow:auto;height:560px !important;width:100%;">
+       <div style="width:{!oppStageList.size *146}px;">
+       <div class="black_strip" style="Height:0 !important; width: 100%;">
+    </div>
+   <!--stage list div start-->  
+   <div class="top_men_bg clearfix menu_box" style="padding:0 0%; ">
+      <ul>
+         <apex:repeat value="{!oppStageList}" var="a">
+            <li>
+               <div class="clearfix text-center"><a class="main_link">{!a}</a></div>
+            </li>
+         </apex:repeat>
+      </ul>
+   </div>
+   <!--stage list div end-->
+   
+   
+   <script>
+  
+       var currencyInContext = '{!JSENCODE(currencyInContext)}';
+       var currInContextConvFactor = 1;
+       
+       var defaultCurrConversionRate = '{!defaultCurrConversionRate}';
+                                   
+       var currMap = {};
+       <apex:repeat value="{!currConversionValue}" var="currKey">
+            currMap['<apex:outputText value="{!currKey}" />'] = '<apex:outputText value="{!currConversionValue[currKey]}" />';
+       </apex:repeat>
+       
+       if(currMap[currencyInContext] != null && currMap[currencyInContext] != '')
+       {
+           currInContextConvFactor = currMap[currencyInContext];
+       } 
+   </script>
+       
+  <script> 
+  
+      var headerDefaultCurrency = currencyInContext;  
+  
+      var totaldeals = 0; 
+      var recordAmount = 0;
+   </script>     
+   <div >
+     
+      <apex:variable value="{!1}" var="rowNum"/>
+      <apex:repeat value="{!oppStageList}" var="a">     
+      <!-- ul main div box -->
+      <!-- first stage list -->
+      
+      <apex:variable value="{!1}" var="columnRowNum"/>
+      
+      <div class="clearfix li_box" id="{!a}">
+         <div class="deal_box clearfix" >
+            <div class="col-md-4 deal_text_box" id="totaldeal-{!rowNum}" style="white-space: nowrap;"> -</div>
+            <div class="col-md-8 total_ammount_box" id="dealsum-{!rowNum}" style="white-space: nowrap;">-</div>            
+         </div>
+         <ul  id="sortable{!rowNum}" class="droptrue scroll_box" style="overflow: auto;overflow-x: hidden;min-height: 472px !important;">
+            <!-- main_box -->
+            <apex:repeat value="{!wrapFieldsList}"  var="oppList">     
+               <apex:outputPanel rendered="{!(oppList.opp.StageName == a)}">
+                  <li id="{!oppList.opp.Id}">
+                     <div class="project_detail_mainbox"> 
+                        <div class="project_desc_box clearfix">
+                           <div id="profile_image_project" class="clearfix margin_bottom">
+                              <div class=" col-md-2 profile_image">
+                                 
+                                     <apex:image url="{!URLFOR($Resource.Pipeline_Resource, 'images/default_image.png')}"  width="23" height="20" alt="{!oppList.opp.Owner.Name}" rendered="{!NOT(isChatterEnabled)}"/>
+                                     <apex:image url="{!oppList.opp.Owner.SmallPhotoUrl}"  width="23" height="20" alt="{!oppList.opp.Owner.Name}" rendered="{!isChatterEnabled}"></apex:image>
+                                 
+                              </div> 
+                              <div class=" col-md-9 project_name">{!oppList.opp.Name}</div>
+                              <div class=" col-md-1"> <a href="/{!oppList.opp.Id}" class="boxDetails_box" target="_blank"><span class="glyphicon glyphicon-chevron-right "></span></a></div>
+                           </div>
+                           <div id="profile_price_name" class="margin_bottom clearfix">
+                              <div class="profile_ammount"> 
+                                 <apex:outputText value="{0, number, {!oppList.currencyIsoCodeValue} ###,###,###,##0}">
+                                    <apex:param value="{!oppList.opp.Amount}"/>
+                                 </apex:outputText> 
+                                 <p style="display: none;" class="pToStoreCurrency" id="pToStoreCurrency{!rowNum}-{!columnRowNum}">
+                                     
+                                 </p>
+                                 <script> 
+                                     var defAmount = '{!oppList.opp.Amount}';
+                                     var pAmount = 0;
+                                     var currencyIsoCodeValue = '{!oppList.currencyIsoCodeValue}';  
+                                     if(defAmount != null && defAmount != ''){
+                                         if(currMap[currencyIsoCodeValue] != null && currMap[currencyIsoCodeValue] != '')
+                                         {
+                                             var convFactor = currMap[currencyIsoCodeValue];
+                                             var pAmount = parseFloat(defAmount) * currInContextConvFactor / convFactor;
+                                             document.getElementById('pToStoreCurrency{!rowNum}-{!columnRowNum}').innerHTML = pAmount;                                   
+                                         }
+                                         else
+                                         {
+                                             document.getElementById('pToStoreCurrency{!rowNum}-{!columnRowNum}').innerHTML = defAmount;     
+                                         }
+                                     }
+                                     
+                                 </script>
+                              </div>
+                              <div class="companyName" style="text-align: left;">
+                                 <apex:outputLink value="/{!oppList.opp.AccountId}" target="_blank">{!oppList.opp.Account.Name}</apex:outputLink>
+                              </div>
+                           </div>
+                          
+                        </div>
+                     </div>
+                           <script>
+                               /* code added starts from here for multicurrency calculation ----- */
+                               
+                                    
+                                   
+                                   var recordCorporateAmountCalculation;
+                                   
+                                   
+                                   if('{!oppList.opp.Amount}' != null && '{!oppList.opp.Amount}' != '')   
+                                   {   
+                                       var currencyIsoCodeValue = '{!oppList.currencyIsoCodeValue}';  
+                                       if(currMap[currencyIsoCodeValue] != null && currMap[currencyIsoCodeValue] != '')
+                                       {
+                                           var convFactor = currMap[currencyIsoCodeValue];
+                                           recordAmount += parseFloat('{!oppList.opp.Amount}') * currInContextConvFactor / convFactor;                                   
+                                       }          
+                                       else
+                                       {
+                                           recordAmount += parseFloat('{!oppList.opp.Amount}');
+                                       }                            
+                                   }
+                                   
+                               /*code added ends here -----     */    
+                               
+                               totaldeals += 1;
+                           </script>
+                  </li>
+               
+               </apex:outputPanel>
+               
+               <apex:variable var="columnRowNum" value="{!columnRowNum + 1}"/>
+               
+            </apex:repeat>
+            <script>     
+                
+                totaldeals = 0;
+                recordAmount = 0;
+            </script>
+            <!-- end main_box -->
+         </ul>
+      </div>
+      <!-- ul_ main end Div-->
+      <!-- first stage list -->
+           <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+          </apex:repeat>  
+          
+          
+            <!-- main_div Box -->
+            
+         </div>
+          
+      </div>
+       
+       </div>
+         <!-- Bootstrap core JavaScript
+            ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+        
+         <script src="{!URLFOR($Resource.Pipeline_Resource, 'js/bootstrap.min.js')}"></script>
+    
+        <script src="{!URLFOR($Resource.Pipeline_Resource, 'js/jquery-1.9.1.js')}"></script>
+        <script src="{!URLFOR($Resource.Pipeline_Resource, 'js/jquery-ui.js')}"></script>
+
+         <script> 
+            var isACMEnabled = '{!isACMEnabled}';
+            var defaultCurrency = '{!JSENCODE(defaultCurrency)}';
+            //console.log(isACMEnabled + ' >>>>>' +defaultCurrency );
+            $(function() {
+            
+             $(".boxDetails_box").click(function(){
+                $(".description_box").show();
+            
+            });
+            
+            $(".close_btn").click(function(){
+                $(".description_box").hide( );
+            
+            });
+             
+              $( "ul.droptrue" ).sortable({
+                  connectWith: "ul",
+                  
+                  /** drag and drop start **/
+                  start: function( event, ui ) {
+                      $(this).removeClass("active_box")
+                      $(".footer_box").show()
+                  },
+                  
+                 out: function( event, ui ) {
+                   
+                    $(this).removeClass("active_box")
+                    $(".footer_box").show()
+                 },
+                 
+                 over: function( event, ui ) {
+                     $(this).addClass("active_box")
+                     $(".footer_box").show()
+                 },
+                 
+             
+             /* drag and drop stop event */
+             
+             stop: function( event, ui ) {
+                 if(this.id != $(ui.item).parent().attr('id')){
+                    
+                    var oppid = $(ui.item).find('li').get(0).id;
+                    var oppamount = $(ui.item).find('div.profile_ammount').find('span').html();
+                    
+                    var oldStage = this.parentNode.id;
+                    var newStage = $(ui.item).parent().parent().attr('id');
+                   
+                    setTotalStageDealSizeFinal();
+                
+                    OppMan.PipelineController.changeOpportunityStage(oppid, oldStage, newStage,function(result, event) {
+if(event.type === 'exception'){}
+else if (event.status){//setTotalStageDealSizeFinal();
+}else{}},{escape: false});} 
+                 $("ul").removeClass("active_box");
+                 $(".footer_box").hide()
+             },
+             
+            
+                              
+                           
+              })
+            
+            
+            
+              $( "ul.dropfalse" ).sortable({
+                connectWith: "ul",
+                dropOnEmpty: false
+                
+              });
+            
+             var sortlist = '';
+             <apex:variable value="{!1}" var="rowNum"/>
+             <apex:repeat value="{!oppStageList}" var="a">  
+                    if({!(rowNum != oppStageList.size)})
+                        sortlist  += '#sortable{!rowNum},'
+                    else 
+                        sortlist  += '#sortable{!rowNum}'           
+              <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+              </apex:repeat>
+              if(sortlist != '' && sortlist != undefined){
+                $( sortlist ).disableSelection();           
+              }
+              
+              
+        });
+        
+        
+        function removeChilds(closestage) {
+            $("ul#" + closestage).children().each(function() {
+                if ($(this).get(0).tagName == 'SPAN')
+                    $(this).remove();
+            });
+        } 
+       
+        function setTotalStageDealSizeFinal()
+        {           
+            var stageSize = {!oppStageList.size};
+            for(var stageCount = 1; stageCount <= stageSize; stageCount++)
+            {
+                var amountToBeDisplayedInHeader = 0;
+                var totalOpps = 0;
+                $("ul#sortable"+ stageCount +" p.pToStoreCurrency").each(function( index ) {
+                    totalOpps++;
+                    var pAmountValue = $( this ).text();
+                    pAmountValue = pAmountValue.trim();
+                    if(pAmountValue != null && pAmountValue != '')
+                    {
+                        var parsedValue = parseInt(pAmountValue);
+                        amountToBeDisplayedInHeader += parsedValue;
+                    }
+                });
+                $('#dealsum-'+stageCount ).html(headerDefaultCurrency + " " + numberWithCommas(amountToBeDisplayedInHeader));
+                $('#totaldeal-'+stageCount).html(totalOpps + " Deals");
+            } 
+        }
+        
+        function numberWithCommas(x) {
+       
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        setTotalStageDealSizeFinal();
+         </script>
+   <!--/body -->
+    </apex:form>
+</apex:page>

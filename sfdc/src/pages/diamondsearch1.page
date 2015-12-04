@@ -1,0 +1,1796 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="DiamondSearch_ctrl">
+    
+   <apex:form > 
+ 
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <!-- Bootstrap -->
+    <link href="{!URLFOR($Resource.dia_bootstrap,'css/bootstrap.min.css')}" rel="stylesheet"/>
+    <link href="{!URLFOR($Resource.dia_bootstrap,'css/style.css')}" rel="stylesheet"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    
+    
+    <!--date picker-->
+     <script src="https://code.jquery.com/jquery-1.10.2.js" />
+     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js" />
+     <script>
+       $(document).ready(function(){
+           $('#myTable').dataTable({
+             
+             
+           });
+            $('#myTable1').dataTable({
+                 
+            });
+            //document.getElementById(myTable_length).value = '25';
+       });
+  </script> 
+       <script>
+    $(function() {
+    $( "[Id$='datepicker']" ).datepicker({
+    showOn: "button",
+    buttonImage: "{!URLFOR($RESOURCE.bgimage1234,'calendar.gif')}",
+    buttonImageOnly: true,
+    buttonText: "Select date",
+    dateFormat:"mm/dd/yy"
+    });
+    
+    $( "[Id$='datepicker1']" ).datepicker({
+    showOn: "button",
+    buttonImage: "{!URLFOR($RESOURCE.bgimage1234,'calendar.gif')}",
+    buttonImageOnly: true,
+    buttonText: "Select date"
+    });
+    });
+    
+    </script>
+    <!--date picker-->
+    
+    <!--UI Slider-->
+        
+            
+    <!-- bin/jquery.slider.min.css -->
+    <link rel="stylesheet" href="{!URLFOR($Resource.dia_bootstrap,'css/jslider.css')}" type="text/css"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.dia_bootstrap,'css/jslider.blue.css')}" type="text/css"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.dia_bootstrap,'css/jslider.plastic.css')}" type="text/css"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.dia_bootstrap,'css/jslider.round.css')}" type="text/css"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.dia_bootstrap,'css/jslider.round.plastic.css')}" type="text/css"/> 
+  <!-- end -->
+
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'/js/jquery-1.7.1.js')}"></script>
+   
+    <!-- bin/jquery.slider.min.js -->
+    
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/jshashtable-2.1_src.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/jquery.numberformatter-1.2.3.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/tmpl.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/jquery.dependClass-0.1.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/draggable-0.1.js')}"></script>
+    <!--script type="text/javascript" src="{!URLFOR($Resource.dia_bootstrap,'js/jquery.slider.js')}"></script-->    
+    <!-- end -->
+
+ 
+
+
+    <style type="text/css" media="screen">
+    /*  body { background: #EEF0F7; }*/
+     .layout { padding: 50px; font-family: Georgia, serif; }
+     .layout-slider { margin-bottom: 60px; width: 100%; }
+     .layout-slider-settings { font-size: 12px; padding-bottom: 10px; }
+     .layout-slider-settings pre { font-family: Courier; }
+     .btn-group{width:100% !important}
+     .multiselect {width:100%;}
+     .open>.dropdown-menu {
+    display: block;
+    width: 100%;
+    text-align: left!important; padding-left: 10px;}
+         .btn-group>.btn:first-child {
+    margin-left: 0;
+    text-align: left;
+    }
+    #tblId td:first-child{
+        border:none;
+        padding:0; 
+           
+    }
+    .btn-group{
+        border:none !important;
+    }
+    .table {
+         border: 1px solid transparent; 
+    }
+    
+    h5{float:left; display:inline; padding-right:2%;}
+    
+    #topSearch{text-transform:uppercase; }
+    .middleBtn{width:300px; margin:20px auto;}
+    #hide .jslider-scale {display:none !important; position:relative;}
+    .hideBtn{width:100% !important; height:15px !important;position:absolute !important; top:51px !important; background:#000 !imporant; margin-left:-5%}
+    .hideBtn ul{padding:0px; margin:0; width:100% !important;}
+    .hideBtn ul li {float: left !important;
+        width: 11.1% !important;
+        list-style-type: none;
+        padding: 5px;
+        margin: 0;
+        text-align: center;
+        font-size: 9px; 
+        left: 0px;
+        top: 5px;
+        color: #999;
+        padding-left: 20px;/*float:left !important; width:11.1% !important; list-style-type:none; padding:0px; margin:0; text-align:center;*/
+   }
+   #hide .jslider-value{display:none;}
+   .bgCyan {
+background: #00aeef !important;
+color: #fff;
+}
+#topSearch{margin-top:20px;}
+.borderPadding{border-top:0px !important; padding:0px !important}
+h4{text-align:center;text-transform:uppercase;}
+#exampleInputEmail2{width:100% !important;}
+#itemtxt{width:100% !important;}
+      
+         .requiredLoaderBG{
+             background-color: rgb(71,71,71);
+             opacity:0.7;
+             filter:alpha(opacity=70);
+             background-image:url('{!URLFOR($Resource.ajaxLoadGif)}');
+             background-position: center center;
+             background-repeat: no-repeat;
+             height: 100%;
+             left: 0;
+             position: fixed;
+             text-align: center;
+             top: 0;
+             width: 100%;
+             z-index: 100;
+         } 
+         .hearderClass{
+             border: 1px solid #ccc;
+            background: #f2f3f3;
+            /* border-width: 0 0 1px 1px; */
+            /* border-color: #e0e3e5; */
+            color: #000;
+            font-size: .9em;
+            font-weight: bold;
+            padding: 5px 2px 4px 5px;
+         }
+         
+         
+          
+.ui-slider-horizontal {
+    height: 0.8em;
+    margin: 0 auto;
+    width: 100%;
+ margin-top:7px;
+}
+ 
+ 
+  
+.ui-slider-horizontal .ui-slider-handle {
+     background:url('{!URLFOR($Resource.SlidIcon,'normal.png')}') !important;
+     border: none !important;
+}
+.ui-slider-horizontal .ui-slider-handle:hover{
+    background:url('{!URLFOR($Resource.SlidIcon,'hover.png')}') !important;
+    border: none !important;
+}
+.txtBox{
+ border-radius: 5px;
+   box-shadow: 0 0 2px rgb(119, 119, 119) inset;
+width: 37px;
+margin-top: 5px;
+border:none;
+text-align:center;
+font-size: 11px;
+}
+
+/*.jslider_blue .jslider-bg i, .jslider_blue .jslider-pointer{/*background:url('{!URLFOR($Resource.SlidBar)}')
+10px 42px !important;
+border: none !important;*/}
+
+
+
+.ui-slider-horizontal {background:url('{!URLFOR($Resource.SlidBar)}')
+10px 42px !important;
+border: none !important;}
+a{outline:none !important;}
+label {
+display: inline !important;
+max-width: 100%;
+margin-bottom: 5px;
+font-weight: 700;
+}
+ 
+.clarityCls .jslider-value span{
+    display: none !important;
+}
+
+.jslider_blue .jslider-bg i, .jslider_blue .jslider-pointer {
+background-image: url('{!URLFOR($Resource.slidblue1)}') !important;
+}
+/*.jslider .jslider-pointer {
+width: 23px !important;
+height: 28px !important;
+background-position: 0 -8px !important;
+position: absolute;
+left: 20%;
+top: -4px;
+margin-left: -10px;
+cursor: pointer;
+cursor: hand;
+}*/
+.jslider .jslider-scale ins {
+font-size: 13px !important;
+text-decoration: none;
+position: absolute;
+left: 0px;
+top: 5px;
+color: #999;
+}
+.jslider .jslider-scale {
+position: relative;
+top: 15px;
+}*/
+
+.ui-widget-header {
+border: 1px solid #ddd;
+background: #428bca !important;
+color: #444;
+font-weight: bold;
+}
+
+.message {
+-moz-border-radius: 4px !important;
+-webkit-border-radius: 4px !important;
+border-radius: 4px !important;
+}
+
+.errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
+border-color: #c00 !important;
+}
+
+.message {
+background-color: #ffc !important;
+border-style: solid !important;
+border-width: 1px !important;
+color: #000 !important;
+padding: 6px 8px 6px 6px !important;
+margin: 4px 20px !important;
+}
+.errorM3 .msgIcon, .errorMedium {
+background-image: url(/img/msg_icons/error24.png) !important;
+background-position: 0 0 !important;
+width: 24px !important;
+height: 24px !important;
+}
+
+.messageCell h4 {
+margin-top: 5px;
+margin-bottom: 5px;
+text-transform: uppercase;
+padding: 0px 3px;
+text-align: left;
+}
+
+/*#sliderPrice .ui-slider-label{display:table; text-aling:center;}
+#sliderPrice .ui-slider-label div{  background:#cfc; float:left; text-aling:center;}*/
+.ui-slider-float .ui-slider-tip{width:60px !important; height:auto!important; margin-left:-26px !important;}
+.ui-slider-float .ui-slider-handle:focus .ui-slider-tip{top:-36px !important;}
+
+[id $='datepicker']+img{margin-left:15px;}
+[id $='datepicker1']+img{margin-left:15px;}
+
+.table>tbody>tr>td{padding:0 12px !important;vertical-align:middle !important; text-align:center !important;}
+ .table>thead>tr>th {vertical-align: middle !important; border-bottom: 2px solid #ddd !important; text-align:center !important;}
+ .radio, .checkbox {
+position: relative;
+display: block;
+min-height: 14px !important;
+margin-top: 0px !important;
+margin-bottom: 10px !important;
+}
+.radio label, .checkbox label {
+padding-left: 26px !important;
+margin-bottom: 0;
+font-weight: 400;
+cursor: pointer;
+}
+    </style>  
+    <!--UI Slider ends-->
+     
+  </head>
+   <!--slider script starts here-->
+  
+    
+    <!--script type="text/javascript">//<![CDATA[ 
+
+    $(document).ready(function() {
+        $("#slider").slider({
+            min: 0,
+            max: 100,
+            step: 1,
+            values: [10, 90],
+            slide: function(event, ui) {
+                for (var i = 0; i < ui.values.length; ++i) {
+                    $("input.sliderValue[data-index=" + i + "]").val(ui.values[i]);
+                }
+            }
+        });
+    
+        $("input.sliderValue").change(function() {
+            var $this = $(this);
+            $("#slider").slider("values", $this.data("index"), $this.val());
+        });
+    });
+    //]]>  
+    
+    </script--> 
+    
+    <!--slider script ends here-->
+    <apex:outputLink value="/" id="transferHomeLink" style="font-size: 130%; font-weight: bold; float: right; padding-top: 1%; padding-right: 1%;"> Home</apex:outputLink>
+  <section class="container-fluid topContainer">
+  
+    <section class="col-md-12 bgCyan ">
+    
+        <h2 class="headTxt">Certified Diamond Search</h2>
+    </section>
+    
+    <section class="col-md-12 borderPadding" style="border-bottom:0;"> 
+         
+            <apex:pageMessages id="errmsgId"></apex:pageMessages>
+         
+
+<!---new section added-->
+    
+        <section class="col-md-12" id="topSearch">
+            
+            <section class="col-md-4"> 
+                <h6>Item Number</h6>
+                <div class="form-group form-inline">
+                    <label class="sr-only" for="itemtxt">Item Number</label>
+                    <apex:inputText value="{!selectedItemNumber}" styleClass="form-control" id="itemtxt" style="width: 100%;" >
+                        <apex:actionSupport action="{!itemNumber}" event="onchange" reRender="prodTblId,errmsgId,diamondCountId" status="ajaxId"/>
+                    </apex:inputText>
+                  </div> 
+            </section>
+            <section class="col-md-4"><h6 >ADDED AFTER (MIN DATE)</h6>   
+                <div class="form-group form-inline">
+                   <apex:inputText value="{!selectedAddedAfter}" styleClass="form-control" id="datepicker" style="width: 90%;" >
+                       <apex:actionsupport event="onchange" action="{!dateValidator}" rerender="errmsgId"/>
+                   </apex:inputText>
+                   <!--input type="text" name="AddedSince" class="form-control" id="datepicker" style="width: 90%;" /-->
+                </div>
+            </section>
+            <section class="col-md-4"><h6 >ADDED BEFORE (MAX DATE)</h6>   
+                <div class="form-group form-inline">
+                   <apex:inputText value="{!selectedAddedBefore}" styleClass="form-control" id="datepicker1" style="width: 90%;" >
+                       <apex:actionsupport event="onchange" action="{!dateValidator}" rerender="errmsgId"/>
+                   </apex:inputText>
+                   <!--input type="text" name="AddedSince" class="form-control" id="datepicker1" style="width: 90%;"/-->
+                </div>
+            </section>            
+        </section>
+     <!---new section added ends-->
+
+     
+        <section class="col-md-12">
+            <section class="col-md-4"><h6 >Type Of Certificate</h6>
+                
+            <div class="checkbox11">      
+              <select id="chkveg1" multiple="multiple">
+                                     <option value="GIA">GIA</option>
+                                     <option value="EGL USA">EGL USA</option>         
+                                     <option value="IGI">IGI</option>
+                                     <option value="AGS">AGS</option>
+                                </select>     
+                </div>
+                
+            </section>
+            <section class="col-md-4">
+            
+            <h6>Shapes</h6>
+                <section class="table-responsive">
+                <table class="table " id="tblId">
+                    <tr>
+                        <td>
+                           
+                                <select id="chkveg" multiple="multiple" onclick="clic();">
+                                 
+                                     <option value="Round">Round</option>
+                                     <option value="Princess">Princess</option>
+                                     <option value="Marquise">Marquise</option>
+                                     <option value="Pear">Pear</option>
+                                     <option value="Emerald">Emerald</option>
+                                     <option value="Radiant">Radiant</option>
+                                     <option value="Oval">Oval</option> 
+                                     <option value="Cushion">Cushion</option>
+                                     <option value="Asscher">Asscher</option>
+                                     <option value="Heart">Heart</option>
+                                     <option value="Other">Other</option>
+                                      
+                                    
+                                </select> 
+                                <!--input type="button" id="btnget" value="Get Selected Values" /-->
+                            
+                        </td>
+                       
+                    </tr>
+                </table>
+                </section>
+            
+            </section>
+            <section class="col-md-4"><h6 >Certificate Number</h6> 
+                <div class="form-group form-inline">
+                    <label class="sr-only" for="CertificateNumber">Certificate Number</label>
+                    <apex:inputText value="{!selectedCertificateNumber}" styleclass="form-control" id="CertificateNumber" style="width: 100%;"> 
+                        <apex:actionSupport action="{!certificateNumber}" event="onchange" reRender="prodTblId,errmsgId,diamondCountId" status="ajaxId"/>
+                    </apex:inputText>
+                    <!--input type="text" class="form-control" id="CertificateNumber" style="width: 100%;"/-->
+                  </div> 
+            </section>
+        </section>
+        <section class="col-md-12">
+            <section class="col-md-4 paddSection"><h6>Price</h6>
+                <div class="showcase">
+                    <div id="sliderPrice" ></div>
+                    <input type="hidden" id="priceId"/>
+                </div> 
+                   <script>
+                    $(document).ready(function(){
+                        var priceArr = ['0','10000','20000','30000','40000','50k+'];                         
+                        $("#sliderPrice").slider({ min: 0, max: 50000, values: [ 0, 50000 ], range: true,step:100 });
+                        $("#sliderPrice").slider("pips" , { labels: priceArr, rest: "label" });
+                        $("#sliderPrice").slider("float" , { labels: priceArr});
+                        $("#sliderPrice").on("slidechange", function(e,ui) {
+                        if(ui.values[1] >= 50000){
+                            $('#sliderPrice .ui-slider-tip').eq(1).html('50K+');
+                        }
+                        $('#priceId').val(ui.values[0] +";"+ui.values[1]);
+                            /*for (var i = 0; i < ui.values.length; ++i) {
+                                console.log( "You selected " + priceArr[ui.values[i]-1] );     
+                            }*/
+                           
+                            //slidPrice(ui.values[0] +";"+ui.values[1]);
+                            console.log( $('#priceId').val()+"You selected " + ui.values[0] +";"+ui.values[1] );  
+                            //minVal = ui.values[i];
+                            //maxVal = ui.values[i];
+                             
+                        });
+                    });
+                </script> 
+                <!--div class="layout-slider pricePlusVal">
+                  <input id="Slider5" type="slider" name="area" value="1;60000" />
+                </div>
+                <script type="text/javascript" charset="utf-8">                      
+                  jQuery("#Slider5").slider({ from: 0, to: 50000, heterogeneity: [], scale: ['0', '|',  '10000', '|', '20000' ,'|', '30000','|',  '40000', '|', '50k+'], limits: false, step: 100, dimension: '&nbsp;$', skin: "blue", callback: function( value ){  if(parseFloat(value.split(';')[1]) >= 50000){$('.pricePlusVal .jslider-value span').eq(1).html('50k<b>+</b>');}}});
+                </script>
+                <div id="sliderPriceId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                <div>
+                    <div style="float:left;">
+                        <span >$</span>
+                        <input type="text" class="sliderValue txtBox priceClass" data-index="0" value="10" id="priceSlidId0"/>
+                    </div>
+                    <div style="float:right;">
+                        <span style="margin-top: 3px;margin-right: 5px;display: inline-block;">$</span>
+                        <input type="text" class="sliderValue txtBox priceClass" data-index="1" value="50000" style="float:right;" id="priceSlidId1"/>
+                    </div>
+                </div-->
+            </section>
+            <section class="col-md-4 paddSection"><h6>Cut</h6>
+                <div class="showcase">
+                    <div id="sliderCut" ></div>
+                    <input type="hidden" id="cutId"/>
+                </div> 
+                   <script>
+                    $(document).ready(function(){
+                        var cutArr = ['P','F','G','VG','EX'];                         
+                        $("#sliderCut").slider({ min: 0, max: 4, values: [ 0, 4 ], range: true });
+                        $("#sliderCut").slider("pips" , { labels: cutArr , rest: "label" });
+                        $("#sliderCut").slider("float" , { labels: cutArr });
+                        $("#sliderCut").on("slidechange", function(e,ui) {
+                            /*for (var i = 0; i < ui.values.length; ++i) {
+                                console.log( "You selected " + cutArr [ui.values[i]-1] );     
+                            }*/
+                            $('#cutId').val(cutArr.slice( ui.values[0], ui.values[1]+1));
+                            console.log( cutArr.slice( ui.values[0], ui.values[1]+1)+" You selected " + cutArr [ui.values[0]] +";"+cutArr[ui.values[1]] );  
+                            //minVal = ui.values[i];
+                            //maxVal = ui.values[i];
+                             
+                        });
+                    });
+                    </script> 
+                    <!--div class="layout-slider clarityCls">
+                      <input id="Slider6" type="slider" name="area" value="0;4" />
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                      jQuery("#Slider6").slider({ from: 0, to: 4, heterogeneity: [], scale: ['EX','VG','G','F','P'], limits: false, step: 1, dimension: '', skin: "blue", callback : function( value ){console.log(value ); }});
+                    </script>
+                    <div id="sliderCutId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                        <div>
+                            <div style="float:left;">                                
+                                <input type="text" class="sliderValue txtBox cutClass" data-index="0" value="EX" id="cutSlidId0"/>
+                            </div>
+                            <div style="float:right;">
+                                <input type="text" class="sliderValue txtBox cutClass" data-index="1" value="P" style="float:right;" id="cutSlidId1"/>
+                            </div>
+                        </div-->
+                
+            </section>
+             <section class="col-md-4 paddSection" ><h6>Color</h6>
+                <div class="showcase">
+                    <div id="sliderColor" ></div>
+                    <input type="hidden" id="colorId"/>
+                </div> 
+                   <script>
+                    $(document).ready(function(){
+                        var colorArr = ['M+','L','K','J','I','H','G','F','E','D'];                         
+                        $("#sliderColor").slider({ min: 0, max: 9, values: [ 0, 9 ], range: true });
+                        $("#sliderColor").slider("pips" , { labels: colorArr , rest: "label" });
+                        $("#sliderColor").slider("float" , { labels: colorArr });
+                        $("#sliderColor").on("slidechange", function(e,ui) {
+                            /*for (var i = 0; i < ui.values.length; ++i) {
+                                console.log( "You selected " + colorArr [ui.values[i]-1] );     
+                            }*/
+                            $('#colorId').val(colorArr.slice( ui.values[0], ui.values[1]+1));
+                            console.log( colorArr.slice( ui.values[0], ui.values[1]+1)+"   You selected " + colorArr [ui.values[0]] +";"+colorArr [ui.values[1]] );  
+                            //minVal = ui.values[i];
+                            //maxVal = ui.values[i];
+                             
+                        });
+                    });
+                </script> 
+                <!--div class="layout-slider clarityCls colorPlusVal" >
+                  <input id="Slider3" type="slider" name="area" value="0;11" />
+                </div>
+                <script type="text/javascript" charset="utf-8">
+                  jQuery("#Slider3").slider({ from: 0, to: 11, heterogeneity: [], scale: ['D', 'E','F','G', 'H', 'I','J','K','L','M','M+'], limits: false, step: 1, dimension: '', skin: "blue", callback: function( value ){console.log(value); } });
+                </script>
+                <div id="sliderColorId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                <div>
+                    <div style="float:left;">                                
+                        <input type="text" class="sliderValue txtBox colorClass" data-index="0" value="D" id="colorSlidId0"/>
+                    </div>
+                    <div style="float:right;">
+                        <input type="text" class="sliderValue txtBox colorClass" data-index="1" value="M" style="float:right;" id="colorSlidId1"/>
+                    </div>
+                </div>
+                <div class="hideBtn">
+                    <ul>
+                        <--li>J</li><li>I</li><li>H</li><li>G</li><li>F</li><li>E</li><li>D</li>
+                        <li>&nbsp;</li><li>E</li><li>F</li><li>G</li><li>H</li><li>I</li><li>J</li><li>L</li><li>&nbsp;</li>
+                    </ul>
+                </div-->
+            </section>
+                      
+        </section>
+    </section>
+        
+    
+    <!--advance criteria-->
+    
+    <section class="col-md-12 borderPadding"  >
+        <section class="col-md-12">
+             <section class="col-md-4 paddSection"><h6>Clarity</h6>
+                    <div class="showcase">
+                        <div id="sliderClarity" ></div>
+                        <input type="hidden" id="clarityId"/>
+                    </div> 
+                    <script>
+                        $(document).ready(function(){
+                            var clarityArr = ['I3','I2','I1','SI3','SI2','SI1', 'VS2','VS1','VVS2','VVS1', 'IF','FL'];                         
+                            $("#sliderClarity").slider({ min: 0, max: 11, values: [ 0, 11 ], range: true });
+                            $("#sliderClarity").slider("pips" , { labels: clarityArr , rest: "label" });
+                            $("#sliderClarity").slider("float" , { labels: clarityArr });
+                            $("#sliderClarity").on("slidechange", function(e,ui) {
+                                /*for (var i = 0; i < ui.values.length; ++i) {
+                                    console.log( "You selected " + clarityArr [ui.values[i]-1] );     
+                                }*/
+                                $('#clarityId').val(clarityArr.slice( ui.values[0], ui.values[1]+1));
+                                console.log( clarityArr.slice( ui.values[0], ui.values[1]+1)+"   You selected " + clarityArr [ui.values[0]] +";"+clarityArr [ui.values[1]] );  
+                                //minVal = ui.values[i];
+                                //maxVal = ui.values[i];
+                                 
+                            });
+                        });
+                    </script> 
+                    <!--div class="layout-slider clarityCls">
+                      <input id="Slider7" type="slider" name="area" value="0;11" />
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                      jQuery("#Slider7").slider({ from: '0', to: '11', heterogeneity: [], scale: ['I3','I2','I1','SI3','SI2','SI1', 'VS2','VS1','VVS2','VVS1', 'IF','FL'], limits: false, step: 1, dimension: '', skin: "blue", callback: function( value ){ console.dir( this ); } });
+                    </script>
+                    <div id="sliderClarityId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                        <div>
+                            <div style="float:left;">                                
+                                <input type="text" class="sliderValue txtBox clarityClass" data-index="0" value="SI2" id="claritySlidId0"/>
+                            </div>
+                            <div style="float:right;">
+                                <input type="text" class="sliderValue txtBox clarityClass" data-index="1" value="FL" style="float:right;" id="claritySlidId1"/>
+                            </div>
+                        </div-->
+                
+            </section>
+            <section class="col-md-4 paddSection">
+            
+                <h6>Polish</h6>
+                <div class="showcase">
+                    <div id="sliderPolish" ></div>
+                    <input type="hidden" id="polishId"/>
+                </div> 
+                   <script>
+                    $(document).ready(function(){
+                        var polishArr = ['P','F','G','VG','EX'];                         
+                        $("#sliderPolish").slider({ min: 0, max: 4, values: [ 0, 4 ], range: true });
+                        $("#sliderPolish").slider("pips" , { labels: polishArr , rest: "label" });
+                        $("#sliderPolish").slider("float" , { labels: polishArr });
+                        $("#sliderPolish").on("slidechange", function(e,ui) {
+                            /*for (var i = 0; i < ui.values.length; ++i) {
+                                console.log( "You selected " + polishArr [ui.values[i]-1] );     
+                            }*/
+                            $('#polishId').val(polishArr.slice( ui.values[0], ui.values[1]+1));
+                            console.log(polishArr.slice( ui.values[0], ui.values[1]+1)+ " You selected " + polishArr [ui.values[0]] +";"+polishArr [ui.values[1]] );  
+                            //minVal = ui.values[i];
+                            //maxVal = ui.values[i];
+                             
+                        });
+                    });
+                    </script> 
+                    <!--div class="layout-slider clarityCls">
+                      <input id="Slider8" type="slider" name="area" value="0;4" />
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                      jQuery("#Slider8").slider({ from: 0, to: 4, heterogeneity: [ ], scale: ['EX','VG','G','F','P'], limits: false, step: 1, dimension: '', skin: "blue", callback: function( value ){console.log(value ); } });
+                    </script>
+                    <div class="layout-slider">
+                      <input id="Slider8" type="slider" name="area" value="2;10" />
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                      jQuery("#Slider8").slider({ from: 1, to: 30, heterogeneity: ['50/5', '75/15'], scale: [1, '|', 3, '|', '5', '|', 15, '|', 30], limits: false, step: 1, dimension: '', skin: "blue", callback: function( value ){ console.dir( this ); } });
+                    </script>
+                    <div id="sliderPolishId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                        <div>
+                            <div style="float:left;">                                
+                                <input type="text" class="sliderValue txtBox polishClass" data-index="0" value="EX" id="polishSlidId0"/>
+                            </div>
+                            <div style="float:right;">
+                                <input type="text" class="sliderValue txtBox polishClass" data-index="1" value="P" style="float:right;" id="polishSlidId1"/>
+                            </div>
+                        </div-->
+                
+            </section>
+           
+            <section class="col-md-4 paddSection"><h6>Fancy Colored Diamonds</h6>
+                    <label>
+                          <input type="checkbox" id="fancyColoredDiamondId" />&nbsp;&nbsp;Fancy Colored Diamonds
+                    </label> <br/>
+                    <label>
+                          <input type="checkbox" id="onlyShowAvailableStonesId" />&nbsp;&nbsp;Only Show Available Stones
+                    </label>                 
+                
+            </section> 
+            <section class="col-md-12 borderPadding" style="border: 0px solid transparent;" >
+                <section class="col-md-4 paddSection">
+                    <h6>Fluorescence</h6>
+                        <div class="showcase">
+                            <div id="sliderFluorescence" ></div>
+                            <input type="hidden" id="fluorescenceId"/>
+                        </div> 
+                           <script>
+                            $(document).ready(function(){
+                                var fluorescenceArr = ['Very Strong',  'Strong',   'Medium',   'Faint',   'None'];                       
+                                $("#sliderFluorescence").slider({ min: 0, max: 4, values: [ 0, 4 ], range: true });
+                                $("#sliderFluorescence").slider("pips" , { labels: fluorescenceArr , rest: "label" });
+                                $("#sliderFluorescence").slider("float" , { labels: fluorescenceArr });                                
+                                $("#sliderFluorescence").on("slidechange", function(e,ui) {
+                                    $('#fluorescenceId').val(fluorescenceArr.slice( ui.values[0], ui.values[1]+1));
+                                    
+                                    /*for (var i = 0; i < ui.values.length; ++i) {
+                                        console.log( "You selected " + fluorescenceArr [ui.values[i]-1] );     
+                                    }*/                                    
+                                    //console.log(ui.values[0]+"---------"+ui.values[1]);
+                                    console.log(fluorescenceArr.slice( ui.values[0], ui.values[1]+1) +"      You selected " + fluorescenceArr [ui.values[0]] +";"+fluorescenceArr [ui.values[1]] );  
+                                    //minVal = ui.values[i];
+                                    //maxVal = ui.values[i];
+                                     
+                                });
+                            });
+                            </script> 
+                        <!--div class="layout-slider clarityCls">
+                          <input id="Slider10" type="text" name="area" value="0;4" />
+                          <apex:inputText value=" " id="Slider10"/>
+                        </div>
+                        <script type="text/javascript" charset="utf-8">
+                          jQuery("[id $='Slider10']").slider({ from: '0', to: '4', heterogeneity: [], scale: ['None',  'Faint',   'Medium',   'Strong',   'Very Strong'], limits: false, step: 1, dimension: '', skin: "blue", callback: function( value ){ console.log( value ); } });
+                        </script>
+                         <div id="sliderFluorescenceId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                        <div>None, Faint, Medium, Strong, Very Strong 
+                            <div style="float:left;">                                
+                                <input type="text" class="sliderValue txtBox fluorescenceClass" data-index="SI2" value="SI2" id="fluorescenceSlidId0"/>
+                            </div>
+                            <div style="float:right;">
+                                <input type="text" class="sliderValue txtBox fluorescenceClass" data-index="FL" value="FL" style="float:right;" id="fluorescenceSlidId1"/>
+                            </div>
+                        </div-->
+                   
+                </section>
+                <section class="col-md-4 paddSection"><h6>Carat</h6>
+                    <div class="showcase">
+                    <div id="sliderCarat" ></div>
+                    <input type="hidden" id="caratId"/>
+                </div> 
+                   <script>
+                    $(document).ready(function(){
+                        var CaratArr = ['0.0', '1.0', '2.0', '3.0', '4.0+'];                         
+                        $("#sliderCarat").slider({ min: 0, max: 4, values: [ 0, 4], range: true,step:0.01 });
+                        $("#sliderCarat").slider("pips" , {labels: CaratArr, rest: "label"  });// 
+                        $("#sliderCarat").slider("float" , { labels: CaratArr,rest: "label" });
+                        $("#sliderCarat").on("slidechange", function(e,ui) {
+                            if(ui.values[1] >=4){
+                                $('#sliderCarat .ui-slider-tip').eq(1).html('4.0+');
+                            }
+                            /*for (var i = 0; i < ui.values.length; ++i) {
+                                console.log( "You selected " + cutArr [ui.values[i]-1] );     
+                            }*/
+                            $('#caratId').val(ui.values[0] +";"+ui.values[1]);
+                            //console.log(ui.values);
+                            console.log( "You selected " + ui.values[0] +";"+ui.values[1] );                               
+                        });
+                    });
+                    </script>    
+                    <!--div class="layout-slider caratPlusVal">
+                      <input id="Slider4" type="slider" name="area" value="0.0;6" />
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                      jQuery("#Slider4").slider({ from: 0.0, to: 5,heterogeneity: [], scale: [0.0,'|',0.5,  '|', 1.0, '|', 1.5, '|', 2.0, '|', 2.5, '|', 3.0, '|', 3.5, '|', 4.0, '|', 4.5, '|','5+' ], round: 3, limits: false, step: 0.1, dimension: '&nbsp;ct', skin: "blue",format: { format: '##.00', locale:'us' }, callback: function( value ){if(parseFloat(value.split(';')[1]) >= 5.00){$('.caratPlusVal .jslider-value span').eq(1).html('5.0<b>+</b>');} } });
+                    </script>
+                     <div id="sliderCaratId" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"  ><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 24%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 42%;"></a></div>
+                        <div>
+                            <div style="float:left;">                                
+                                <input type="text" class="sliderValue txtBox caratClass" data-index="0" value="1" id="caratSlidId0"/>
+                            </div>
+                            <div style="float:right;">
+                                <input type="text" class="sliderValue txtBox caratClass" data-index="1" value="30" style="float:right;" id="caratSlidId1"/>
+                            </div>
+                        </div-->
+                </section>
+                <section class="col-md-4 paddSection">  
+                <section class="col-md-6 paddSection">   
+                    <apex:commandButton oncomplete="search();" reRender="prodTblId,errmsgId,diamondCountId" status="ajaxId" value="Search" style="margin-top: 18px !important;" styleClass="btn btn-primary btn-lg btn-block" />
+                    
+                </section>
+                <section class="col-md-6 paddSection">
+                    <apex:commandButton action="{!OnReset}" value="Reset to Default" style="margin-top: 18px !important;" styleClass="btn btn-primary btn-lg btn-block" />                    
+                </section>
+                </section>
+                
+            </section>
+            <section class="col-md-12 borderPadding paddSection" style="border: 0px solid transparent;height:20px !important;" >&nbsp;</section >
+        </section> 
+    </section>
+    
+ </section>
+ 
+ <section class="container-fluid ">
+    <section class="col-md-12 bgCyan" style="background: #00aeef !important;">
+        <apex:outputPanel id="diamondCountId" >
+            <section class="pull-center"><center><h4>RESULTS:&nbsp;{!objProducts.size} DIAMONDS</h4></center></section>
+            <!--section class="pull-right"><h4>RESET CRITERIA</h4></section-->
+        </apex:outputPanel>
+    </section>
+    
+    <section class="col-md-12 borderPadding">
+     <section class="table-responsive">
+      <apex:outputPanel id="prodTblId"><!----------------------{!objProducts}-->
+        <table id="myTable" class="table  table-striped">
+            <thead>
+                <tr>
+                    <th width="1%">
+                        <label>
+                          <input type="checkbox" id="selectAllId" onclick="onSelectCheck(this);"/> 
+                        </label>
+                    </th>
+                    <th> Available</th>                    
+                    <th>Cert Number</th>
+                    <th>Cert Type</th>
+                    <th>Item Number</th> 
+                    <th>PPC</th>  
+                    <th>Total Price</th>                 
+                    <th>Carat</th>
+                    <th>Shape</th>                    
+                    <th>Color</th>
+                    <th>Clarity</th>
+                    <th>Cut</th>
+                    <th>Polish</th>
+                    <th>Sym</th> 
+                    <th>Fluor</th>
+                    <th>Depth%</th>
+                    <th>Table%</th>
+                    <th>L/W</th>                   
+                </tr>
+            </thead>
+            
+            <tbody>
+                <apex:repeat value="{!objProducts}" var="p">
+                    <tr>
+                        <td >
+                            <div class="checkbox">
+                                <label>
+                                    <apex:inputCheckbox value="{!p.isSelected}" styleClass="selchk"/>
+                                    <!--input type="checkbox" class="selchk" value="{!p.isSelected}"/-->
+                                </label>
+                            </div>
+                        </td>  
+                        <td>
+                            <apex:outputPanel rendered="{!IF(p.objProd.Available_for_Sale__c == true,true,false)}">
+                                On Hold
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(OR(p.objProd.Available_for_Sale__c == false ,p.objProd.Available_for_Sale__c == null),true,false)}">
+                                <apex:outputPanel rendered="{!IF(p.objProd.Quantity_on_Hand__c == 0,true,false)}">
+                                    On Memo
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(AND(p.objProd.Quantity_on_Hand__c != 0,NOT(isBlank(p.objProd.Quantity_on_Hand__c))),true,false)}">
+                                    In Stock
+                                </apex:outputPanel>
+                            </apex:outputPanel> 
+                        </td>                       
+                        <td><apex:outputField value="{!p.objProd.Report_Number__c }"/></td>
+                        <td><apex:outputField value="{!p.objProd.Report_Agency__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Product_ID__c}"/></td>
+                        <td>
+                           <apex:outputText value="{0, number, $#,##0.00}">
+                               <apex:param value="{!p.objProd.Sell_Price__c}" />
+                           </apex:outputText>
+                        </td>
+                        <td>
+                           <apex:outputText value="{0, number, $#,##0.00}">
+                               <apex:param value="{!p.objProd.Total_Sell_Price__c }" />
+                           </apex:outputText>
+                        </td>
+                        <td><apex:outputField value="{!p.objProd.Carats__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Shape__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Color__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Clarity__c}"/></td>                         
+                        <td><apex:outputField value="{!p.objProd.Final_Cut__c}"/></td>                      
+                        <td><apex:outputField value="{!p.objProd.Polish__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Symmetry__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Fluorescence__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Depth_percent__c}"/></td>                      
+                        <td><apex:outputField value="{!p.objProd.Table_percent__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.L_W_Ratio__c}"/></td>
+                    </tr>
+                </apex:repeat>
+                <!--tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk"/></label></div></td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>I</td>
+                    <td>VS2</td>
+                   
+                    <td>$260</td>
+                     
+                </tr>
+                <tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk"/></label></div></td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>G</td>
+                    <td>VS2</td>
+                    
+                    <td>$260</td>
+                    
+                </tr>
+                <tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk"/></label></div></td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>H</td>
+                    <td>VS2</td>
+                   
+                    <td>$260</td>
+                    
+                </tr>
+                <tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk"/></label></div></td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>I</td>
+                    <td>VS2</td>
+                    
+                    <td>$260</td>
+                        
+                </tr>
+                <tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk"/></label></div></td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>G</td>
+                    <td>VS2</td>
+                    
+                    <td>$260</td>
+                        
+                </tr-->
+            </tbody>
+            
+        </table>
+        
+       </apex:outputPanel>
+       
+       <section class="middleBtn">
+           <apex:commandButton value="Add to Selected Diamonds" action="{!onSelect}" styleClass="btn btn-primary btn-lg btn-block" reRender="selectedProdId,errmsgId,diamondCountId" status="ajaxId"/> 
+        <!--button type="button" class="btn btn-primary btn-lg btn-block">Add to Selected Diamonds</button-->
+       </section>
+        
+        </section>
+   
+    
+    
+    
+    
+    
+    
+
+
+ </section>
+</section>
+
+
+
+  
+     <!--new table--> 
+      <section class="container-fluid">
+
+        <section class="col-md-12 bgCyan" >
+        <section class="row">
+   <h4>Selected Diamonds</h4>
+   </section>
+        </section>
+        
+        </section>
+       
+       <section class="container-fluid">
+     <section class="table-responsive" style="border:1px solid #ccc;">
+         <apex:outputPanel id="selectedProdId">
+        <table id="myTable1" class="table  table-striped">
+            <thead>
+                <tr>
+                    <th width="1%">                          
+                        <label>
+                          <input type="checkbox" id="selectedAllId" onclick="onSelectedCheck(this);"/> 
+                        </label> 
+                    </th>
+                    <th> Available</th>
+                    <th>Cert Number</th>
+                    <th>Cert Type</th>
+                    <th>Item Number</th>
+                     <th>PPC</th>  
+                    <th>Total Price</th>                    
+                    <th>Carat</th>
+                    <!-- <th>Price</th> -->
+                    <th>Shape</th>                    
+                    <th>Color</th>
+                    <th>Clarity</th>
+                    <th>Cut</th>
+                    <th>Polish</th>
+                    <th>Sym</th>
+                    <th>Fluor</th>
+                    <th>Depth%</th>
+                    <th>Table%</th>
+                    <th>L/W</th>  
+                    
+                    
+                </tr>
+            </thead>
+            
+            <tbody>
+                 <apex:repeat value="{!selectedCertProducts}" var="p">
+                    <tr>
+                        <td width="200px">
+                            <div class="checkbox">
+                                <label>
+                                    <apex:inputCheckbox value="{!p.isSelectedProd}" styleClass="selchk1"/>
+                                    <!--input type="checkbox" class="selchk" value="{!p.isSelected}"/-->
+                                </label>
+                            </div>                        
+                            <!--div class="checkbox"><label><input type="checkbox" class="selchk1"/></label></div-->
+                        </td>
+                        <td>
+                            <apex:outputPanel rendered="{!IF(p.objProd.Available_for_Sale__c == true,true,false)}">                           
+                                <apex:outputPanel rendered="{!IF(AND(p.objProd.Quantity_on_Hand__c != 0,NOT(isBlank(p.objProd.Quantity_on_Hand__c))),true,false)}">
+                                    On Hold
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(p.objProd.Quantity_on_Hand__c == 0,true,false)}">
+                                    On Memo
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(OR(p.objProd.Available_for_Sale__c == false,p.objProd.Available_for_Sale__c == null),true,false)}">
+                                <apex:outputPanel rendered="{!IF(p.objProd.Quantity_on_Hand__c == 0,true,false)}">
+                                    On Memo
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(AND(p.objProd.Quantity_on_Hand__c != 0,NOT(isBlank(p.objProd.Quantity_on_Hand__c))),true,false)}">
+                                    In Stock
+                                </apex:outputPanel>
+                            </apex:outputPanel> 
+                        </td>
+                        <td><apex:outputField value="{!p.objProd.Report_Number__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Report_Agency__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Product_ID__c}"/></td>
+                        <td>
+                           <apex:outputText value="{0, number, $#,##0.00}">
+                               <apex:param value="{!p.objProd.Sell_Price__c}" />
+                           </apex:outputText>
+                        </td>
+                        <td>
+                           <apex:outputText value="{0, number, $#,##0.00}">
+                               <apex:param value="{!p.objProd.Total_Sell_Price__c }" />
+                           </apex:outputText>
+                        </td>
+                        <td><apex:outputField value="{!p.objProd.Carats__c}"/></td>
+                        <!-- <td><apex:outputText value="${!p.objProd.Sell_Price__c}"/></td> -->
+                        <td><apex:outputField value="{!p.objProd.Shape__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Color__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Clarity__c}"/></td>                         
+                        <td><apex:outputField value="{!p.objProd.Final_Cut__c}"/></td>                      
+                        <td><apex:outputField value="{!p.objProd.Polish__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Symmetry__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Fluorescence__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Depth_percent__c}"/></td>                      
+                        <td><apex:outputField value="{!p.objProd.Table_percent__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.L_W_Ratio__c}"/></td>
+                        
+                        <!--td><apex:outputField value="{!p.objProd.White_Pine_Item_No_New__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Style_Number__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Available_for_Sale__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Clarity__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Depth__c}"/></td>
+                        <td><apex:outputField value="{!p.objProd.Table_percent__c}"/></td>                       
+                        <td><apex:outputField value="{!p.objProd.Depth_percent__c}"/></td-->
+                    </tr>
+                </apex:repeat>
+                <!--tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk1"/></label></div></td>
+                    <td>Item01</td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>I</td>
+                    <td>VS2</td>
+                   
+                    <td>$260</td>
+                     
+                </tr>
+                <tr>
+                    <td><div class="checkbox"><label><input type="checkbox" class="selchk1"/></label></div></td>
+                    <td>Item02</td>
+                    <td>Priencess</td>
+                    <td>0.23</td>
+                    <td>Very Good</td>
+                    <td>G</td>
+                    <td>VS2</td>
+                    
+                    <td>$260</td>
+                    
+                </tr-->
+                
+            </tbody>
+            
+        </table>
+        <script>
+$(document).ready(function(){
+    $('#myTable').dataTable();
+     $('#myTable1').dataTable();
+});
+</script>
+        <section class="col-md-12 bgCyan" style="background: #00aeef !important;color: #fff;">
+           <section class="row">
+               <h4 class="bgCyan" style="background: #00aeef !important;color: #fff;">Total Sell Price:&nbsp;<b>
+                 <apex:outputText value="${0, number, #,##0.00}">
+                       <apex:param value="{!totalSellPrice}" />
+                 </apex:outputText></b> And Total Number Of Items:&nbsp;<b>{!selectedCertProducts.size}</b>
+               </h4>
+           </section>
+        </section>
+        
+        </apex:outputPanel>
+        
+        <section class=" col-md-12"  style="margin-top:18px;"> 
+                      
+        </section>
+     </section>
+     </section>
+     <br/>
+<!-- New Slider-->
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/flick/jquery-ui.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>  
+    <script src="{!URLFOR($Resource.UISlid,'jquery-ui-slider-pips.js')}"></script>
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.UISlid,'jquery-ui-slider-pips.css')}"/>
+<!-- End Slider--> 
+     <!--new table end-->
+   
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{!URLFOR($Resource.dia_bootstrap,'js/bootstrap.min.js')}"></script>
+    
+    <!--link rel="stylesheet" href="{!URLFOR($Resource.multiselect,'jQueryMultiSelectDropdown/css/bootstrap-3.1.1.min.css')}" type="text/css" /-->
+<link rel="stylesheet" href="{!URLFOR($Resource.multiselect,'jQueryMultiSelectDropdown/css/bootstrap-multiselect.css')}" type="text/css" />
+
+<!--script type="text/javascript" src="{!URLFOR($Resource.multiselect,'jQueryMultiSelectDropdown/js/bootstrap-2.3.2.min.js')}"></script-->
+<script type="text/javascript" src="{!URLFOR($Resource.multiselect,'jQueryMultiSelectDropdown/js/bootstrap-multiselect.js')}"></script>
+       
+        <apex:actionstatus startStyleClass="requiredLoaderBG" id="ajaxId" />
+       
+       <script type="text/javascript">
+    $(document).ready(function() {
+        $('#chkveg').multiselect({
+            includeSelectAllOption: true
+        });
+        
+ 
+        $('#btnget').click(function() {
+            alert($('#chkveg').val());
+            typeOfCert();
+        });
+         $('#chkveg1').multiselect({
+            includeSelectAllOption: true
+        });
+        $('#btnget').click(function() {
+            alert($('#chkveg1').val());
+            typeOfCert();
+        });
+               
+     });
+     /*function clic(){     
+         alert($('#chkveg').val());
+     }*/
+    //$("#selectedAllId").click(
+     function onSelectedCheck(elem){ 
+        if($(elem).is(':checked')){
+            $('.selchk1').prop('checked',true);
+        }else{
+            $('.selchk1').prop('checked',false);
+        }
+    }//);
+    //$('#selectAllId').click(
+    function onSelectCheck(elem){
+        if($(elem).is(':checked')){
+            $('.selchk').prop('checked',true);
+        }else{
+            $('.selchk').prop('checked',false);
+        }
+    }//);
+    </script>
+       
+       
+       <!--script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/ui-lightness/jquery-ui.css"/>
+       
+  <script type="text/javascript">//<![CDATA[ 
+    /* var j$ = $.noConflict();
+    j$(document).ready(function() {
+        j$("#sliderPriceId").slider({
+            min: 0,
+            max: 50000,
+            step: 1,
+            values: [0,50000],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        j$("#priceSlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.priceClass").change(function() {
+            var j$this = j$(this);
+            j$("#sliderPriceId").slider("values", j$this.data("index"), j$this.val());
+             console.log(j$("#priceSlidId0").val()+'box'+j$("#priceSlidId1").val());           
+        });
+        
+        j$("#sliderCutId").slider({
+            min: 0,
+            max: 400,
+            step: 100,
+            values: [0,400],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        if( ui.values[i] == '0')
+                            j$("#cutSlidId"+i).val('EX');
+                        if( ui.values[i] == '100')
+                            j$("#cutSlidId"+i).val('VG');
+                        if( ui.values[i] == '200')
+                            j$("#cutSlidId"+i).val('G');
+                        if( ui.values[i] == '300')
+                            j$("#cutSlidId"+i).val('F');
+                        if( ui.values[i] == '400')
+                            j$("#cutSlidId"+i).val('P');                         
+                        //j$("#cutSlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.cutClass").change(function() {
+            var j$this = j$(this);
+            var sVal = 0;
+            if( j$this.val() == 'EX')
+                sVal = 0;
+            if( j$this.val() == 'VG')
+                sVal = 100;
+            if( j$this.val() == 'G')
+                sVal = 200;
+            if( j$this.val() == 'F')
+                sVal = 300;
+            if( j$this.val() == 'P')
+                sVal = 400;
+            j$("#sliderCutId").slider("values", j$this.data("index"), sVal );//j$this.val());
+             console.log(j$("#cutSlidId0").val()+'box'+j$("#cutSlidId1").val());           
+        });
+        
+         j$("#sliderColorId").slider({
+            min: 0,
+            max: 900,
+            step: 100,
+            values: [0,900],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        if( ui.values[i] == '0')
+                            j$("#colorSlidId"+i).val('D');
+                        if( ui.values[i] == '100')
+                            j$("#colorSlidId"+i).val('E');
+                        if( ui.values[i] == '200')
+                            j$("#colorSlidId"+i).val('F');
+                        if( ui.values[i] == '300')
+                            j$("#colorSlidId"+i).val('G');
+                        if( ui.values[i] == '400')
+                            j$("#colorSlidId"+i).val('H');
+                        if( ui.values[i] == '500')
+                            j$("#colorSlidId"+i).val('I');
+                        if( ui.values[i] == '600')
+                            j$("#colorSlidId"+i).val('J');
+                        if( ui.values[i] == '700')
+                            j$("#colorSlidId"+i).val('K');
+                        if( ui.values[i] == '800')
+                            j$("#colorSlidId"+i).val('L');
+                        if( ui.values[i] == '900')
+                            j$("#colorSlidId"+i).val('M');                         
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.colorClass").change(function() {
+            var j$this = j$(this);
+            var sVal = 0;
+            if( j$this.val() == 'D')
+                sVal  = 0;                
+            if( j$this.val() == 'E')
+                sVal  = 100;
+            if( j$this.val() == 'F')
+                sVal  = 200;                
+            
+            if( j$this.val() == 'G')
+                sVal  = 300;
+            
+            if( j$this.val() == 'H')
+                sVal  = 400;                
+            
+            if( j$this.val() == 'I')
+                sVal  = 500;
+            
+            if( j$this.val() == 'J')
+                sVal  = 600;                
+            
+            if( j$this.val() == 'K')
+                sVal  = 700;
+            
+            if( j$this.val() == 'L')
+                sVal  = 800;                
+            
+            if( j$this.val() == 'M')
+                sVal  = 900;
+            
+             
+            j$("#sliderColorutId").slider("values", j$this.data("index"), sVal);//j$this.val());
+             console.log(j$("#colorSlidId0").val()+'box'+j$("#colorSlidId1").val());           
+        });
+        
+        j$("#sliderClarityId").slider({
+            min: 0,
+            max: 700,
+            step: 100,
+            values: [0,700],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        if( ui.values[i] == '0')
+                            j$("#claritySlidId"+i).val('SI2');
+                        if( ui.values[i] == '100')
+                            j$("#claritySlidId"+i).val('SI1');
+                        if( ui.values[i] == '200')
+                            j$("#claritySlidId"+i).val('VS2');
+                        if( ui.values[i] == '300')
+                            j$("#claritySlidId"+i).val('VS1');
+                        if( ui.values[i] == '400')
+                            j$("#claritySlidId"+i).val('VVS2');  
+                        if( ui.values[i] == '500')
+                            j$("#claritySlidId"+i).val('VVS1');    
+                        if( ui.values[i] == '600')
+                            j$("#claritySlidId"+i).val('IF');  
+                        if( ui.values[i] == '700')
+                            j$("#claritySlidId"+i).val('FL');                                                   
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }/*
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        j$("#claritySlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }*/
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.clarityClass").change(function() {
+            var j$this = j$(this);
+             var sVal = 0; 
+            if( j$this.val() == 'SI2')
+                sVal = 0;
+            if( j$this.val() == 'SI1')
+                 sVal = 100;
+            if( j$this.val() == 'VS2')
+                 sVal = 200;
+            if( j$this.val() == 'VS1')
+                sVal = 300;
+            if( j$this.val() == 'VVS2')
+                sVal = 400;
+            if( j$this.val() == 'VVS1')
+                sVal = 500;
+            if( j$this.val() == 'IF')
+                sVal = 600;
+            if( j$this.val() == 'FL')
+                sVal = 700;
+                                     
+            j$("#sliderClarityId").slider("values", j$this.data("index"), sVal);//j$this.val());
+             console.log(j$("#claritySlidId0").val()+'box'+j$("#claritySlidId1").val());           
+        });
+        
+        j$("#sliderPolishId").slider({
+            min: 0,
+            max: 400,
+            step: 100,
+            values: [0,400],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        if( ui.values[i] == '0')
+                            j$("#polishSlidId"+i).val('EX');
+                        if( ui.values[i] == '100')
+                            j$("#polishSlidId"+i).val('VG');
+                        if( ui.values[i] == '200')
+                            j$("#polishSlidId"+i).val('G');
+                        if( ui.values[i] == '300')
+                            j$("#polishSlidId"+i).val('F');
+                        if( ui.values[i] == '400')
+                            j$("#polishSlidId"+i).val('P'); 
+                         
+                        //j$("#polishSlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.polishClass").change(function() {
+            var j$this = j$(this);
+            var sVal = 0;
+            if( j$this.val() == 'EX')
+                sVal = 0;
+            if( j$this.val() == 'VG')
+                sVal = 100;
+            if( j$this.val() == 'G')
+                sVal = 200;
+            if( j$this.val() == 'F')
+                sVal = 300;
+            if( j$this.val() == 'P')
+                sVal = 400;
+            j$("#sliderPolishId").slider("values", j$this.data("index"),sVal );// j$this.val());
+             console.log(j$("#polishSlidId0").val()+'box'+j$("#polishSlidId1").val());           
+        });
+        
+        j$("#sliderFluorescenceId").slider({
+            min: 0,
+            max: 700,
+            step: 100,
+            values: [0,700],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        if( ui.values[i] == '0')
+                            j$("#fluorescenceSlidId"+i).val('SI2');
+                        if( ui.values[i] == '100')
+                            j$("#fluorescenceSlidId"+i).val('SI1');
+                        if( ui.values[i] == '200')
+                            j$("#fluorescenceSlidId"+i).val('VS2');
+                        if( ui.values[i] == '300')
+                            j$("#fluorescenceSlidId"+i).val('VS1');
+                        if( ui.values[i] == '400')
+                            j$("#fluorescenceSlidId"+i).val('VVS2');  
+                        if( ui.values[i] == '500')
+                            j$("#fluorescenceSlidId"+i).val('VVS1');    
+                        if( ui.values[i] == '600')
+                            j$("#fluorescenceSlidId"+i).val('IF');  
+                        if( ui.values[i] == '700')
+                            j$("#fluorescenceSlidId"+i).val('FL');   
+                        //j$("#fluorescenceSlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.fluorescenceClass").change(function() {
+            var j$this = j$(this);
+            var sVal = 0; 
+            if( j$this.val() == 'SI2')
+                sVal = 0;
+            if( j$this.val() == 'SI1')
+                 sVal = 100;
+            if( j$this.val() == 'VS2')
+                 sVal = 200;
+            if( j$this.val() == 'VS1')
+                sVal = 300;
+            if( j$this.val() == 'VVS2')
+                sVal = 400;
+            if( j$this.val() == 'VVS1')
+                sVal = 500;
+            if( j$this.val() == 'IF')
+                sVal = 600;
+            if( j$this.val() == 'FL')
+                sVal = 700;
+            j$("#sliderFluorescenceId").slider("values", j$this.data("index"), sVal);//j$this.val());
+             console.log(j$("#fluorescenceSlidId0").val()+'box'+j$("#fluorescenceSlidId1").val());           
+        });
+        
+        j$("#sliderCaratId").slider({
+            min: 1,
+            max: 30,
+            step: 1,
+            values: [1,30],
+            slide: function(event, ui) {                
+                for (var i = 0; i < ui.values.length; ++i) {
+                    if(parseInt(ui.values[0]) <= parseInt(ui.values[1])){
+                        j$("#caratSlidId"+i).val(ui.values[i]);
+                    }else{
+                        //alert('Min value can't be more than Max!');
+                    }
+                     
+                }
+                console.log(ui);
+                console.log(event);
+                console.log(ui.values[0]+'slid'+ui.values[1]);
+            }
+             
+        });
+    
+        j$("input.caratClass").change(function() {
+            var j$this = j$(this);
+            j$("#sliderCaratId").slider("values", j$this.data("index"), j$this.val());
+             console.log(j$("#caratSlidId0").val()+'box'+j$("#caratSlidId1").val());           
+        });
+        
+        
+    });*/
+    //]]>  
+    
+    </script--> 
+    <script>
+        $(document).ready(function(){
+        $('#sliderPrice .ui-slider-pip-0 .ui-slider-label').text('$0');
+        $('#sliderPrice .ui-slider-pip-10000 .ui-slider-label').text('$10000');
+        $('#sliderPrice .ui-slider-pip-20000 .ui-slider-label').text('$20000');
+        $('#sliderPrice .ui-slider-pip-30000 .ui-slider-label').text('$30000');
+        $('#sliderPrice .ui-slider-pip-40000 .ui-slider-label').text('$40000');
+        $('#sliderPrice .ui-slider-pip-50000 .ui-slider-label').text('$50k+');
+        
+         $('#sliderCarat .ui-slider-pip-0 .ui-slider-label').html('&nbsp;&nbsp;0.0ct');
+         $('#sliderCarat .ui-slider-pip-1 .ui-slider-label').text('1.0ct');
+         $('#sliderCarat .ui-slider-pip-2 .ui-slider-label').text('2.0ct');
+         $('#sliderCarat .ui-slider-pip-3 .ui-slider-label').text('3.0ct');
+         $('#sliderCarat .ui-slider-pip-4 .ui-slider-label').text('4.0+ct');
+        
+         //$('#sliderPrice .ui-slider-label').eq(0).html('<span>$0</span><span>$10000</span><span>$20000</span><span>$30000</span><span>$40000</span><span>$50k+</span>');
+         $('#sliderPrice .ui-slider-tip').eq(1).html('50K+');
+         //$('#sliderPrice .ui-slider-tip').eq(0).html('50K+');
+         //$('#sliderCarat .ui-slider-label').eq(0).html('<span>0.0&nbsp;ct</span><span>1.0&nbsp;ct</span><span>2.0&nbsp;ct</span><span>3.0&nbsp;ct</span><span>4.0+&nbsp;ct</span>');
+         $('#sliderCarat .ui-slider-tip').eq(1).html('4.0+');
+         //$('#sliderCarat .ui-slider-tip').eq(0).html('4.0+');
+        });
+    </script>
+    <!--script>
+          $(document).ready(function(){
+              var val = $("[id$='Slider5']").val();  
+              if(parseFloat(val.split(';')[1]) >= 50000){$('.pricePlusVal .jslider-value span').eq(1).html('50k<b>+</b>');}
+              var val1 = $("[id$='Slider4']").val();  
+              if(parseFloat(val1.split(';')[1]) >= 5.00){$('.caratPlusVal .jslider-value span').eq(1).html('5.0<b>+</b>');} 
+          });
+    </script--> 
+ 
+<style>
+    
+    .ui-widget-header {
+        border: 1px solid #ddd;
+        background: #428bca !important;
+        color: #444;
+        font-weight: bold;
+    }
+    #sliderPrice .ui-slider-label span{
+        padding: 0px 33px 0px 9px;
+        color:#999;
+        font-weight:normal;
+    }
+    
+    /*#sliderPrice .ui-slider-label span:first-child{ color:#FF7A00; font-weight:bold;}
+    #sliderPrice .ui-slider-label span:last-child{ color:#1897C9; font-weight:bold;}
+    
+    #sliderCarat .ui-slider-label span{
+        padding: 0px 61px 0px 4px;
+        color:#999;
+        font-weight:normal;
+    }*/
+    #sliderCarat .ui-slider-label span:first-child{ color:#FF7A00; font-weight:bold;}
+    #sliderCarat .ui-slider-label span:last-child{ color:#1897C9; font-weight:bold;}
+    
+    .col-md-4{margin-top:10px; margin-bottom:0px}
+    .col-md-12{}
+    .paddSection{margin-bottom:10px !important; }
+    #sliderCarat ui-slider-pip ui-slider-pip-label{
+        left:5% !important;
+    }
+</style> 
+<!--  apex:actionFunction name="slidPrice" reRender="prodTblId,errmsgId,diamondCountId">
+    <apex:param name="val" assignTo="{!selectedPrice}" value=""/>
+</apex:actionFunction>--> 
+<apex:actionFunction name="onSearch" action="{!onSearch}" reRender="prodTblId,errmsgId,diamondCountId" status="ajaxId">
+    <apex:param name="sF" assignTo="{!selectedFluorescence}" value=""/>
+    <apex:param name="sP" assignTo="{!selectedPrice}" value=""/>
+    <!--apex:param name="sIN" assignTo="{!selectedItemNumber}" value=""/>
+    <apex:param name="sAA" assignTo="{!selectedAddedAfter}" value=""/>
+    <apex:param name="sAB" assignTo="{!selectedAddedBefore}" value=""/-->
+    <apex:param name="sS" assignTo="{!selectedShapes}" value=""/>
+    <apex:param name="sTC" assignTo="{!selectedTypeOfCertificate }" value=""/>
+    <apex:param name="sCu" assignTo="{!selectedCut}" value=""/>
+    <apex:param name="sCl" assignTo="{!selectedClarity}" value=""/>
+    <apex:param name="sCa" assignTo="{!selectedCarat}" value=""/>
+    <apex:param name="sPo" assignTo="{!selectedPolish}" value=""/>
+    <apex:param name="sCol" assignTo="{!selectedColor}" value=""/>
+    <apex:param name="sFCD" assignTo="{!selectedFancyColoredDiamond}" value=""/>
+    <apex:param name="oSas" assignTo="{!selectedStone}" value=""/>  
+</apex:actionFunction>
+ </apex:form>
+ <script>
+     function search(){//console.log(12);   
+         var sF = $('#fluorescenceId').val();
+         var sP = $('#priceId').val();
+         //var sIN = '';
+         //var sAA = '';
+         //var sAB = '';         
+         var sS = $('#chkveg').val();
+         if(sS != null && sS != ''){
+             sS = sS.toString();
+         }
+         var sTC= $('#chkveg1').val();
+         if(sTC != null && sTC != ''){
+             sTC = sTC.toString();
+         }
+         //Changes Done
+         var sCu = $('#cutId').val();
+         sCu = sCu.replace(/P/g,'Poor').replace(/F/g,'Fair').replace(/,G/g,',Good').replace(/VG/g,'Very Good').replace(/EX/g,'Excellent');
+         var sCl = $('#clarityId').val();
+         var sCa = $('#caratId').val();
+         var sPo = $('#polishId').val();
+         console.log('::'+sPo);
+         sPo = sPo.replace(/P/g,'Poor').replace(/F/g,'Fair').replace(/,G/g,',Good').replace(/VG/g,'Very Good').replace(/EX/g,'Excellent');
+         //sPo = sPo.replace(/F/g,'Fair');
+         //sPo = sPo.replace(/G/g,'Good');
+         //sPo = sPo.replace(/VG/g,'Very Good');
+         //sPo = sPo.replace(/EX/g,'Excellent');
+         
+         var sCol = $('#colorId').val();
+         var sFCD = $("[id$='fancyColoredDiamondId']").is(":checked");//$("#fancyColoredDiamondId").val();
+         var oSas =$('#onlyShowAvailableStonesId').is(":checked");
+         //console.log($("[id$='fancyColoredDiamondId']").is(":checked"));
+         console.log('Polish---'+sPo);
+         console.log('CheckingValue'+sF+'----'+sP+'----'+sTC+'----'+sS+'----'+sCu+'----'+sCl+'----'+sCa+'----'+sPo+'----'+sCol+'----'+sFCD+'-----'+oSas);
+         onSearch(sF,sP,sS,sTC,sCu,sCl,sCa,sPo,sCol,sFCD,oSas);               
+     }
+ </script>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <!--link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+
+<!--script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script-->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script> 
+ 
+<!--section class="container-fluid ">
+    <section class="col-md-12 borderPadding">
+<section class="table-responsive">
+<table id="myTable1" class="table table-striped" >  
+        <thead>  
+          <tr>  
+            <th>ENO</th>  
+            <th>EMPName</th>  
+            <th>Country</th>  
+            <th>Salary</th>  
+          </tr>  
+        </thead>  
+        <tbody>  
+          <tr>  
+            <td>001</td>  
+            <td>Anusha</td>  
+            <td>India</td>  
+            <td>10000</td>  
+          </tr>  
+          <tr>  
+            <td>002</td>  
+            <td>Charles</td>  
+            <td>United Kingdom</td>  
+            <td>28000</td>  
+          </tr>  
+          <tr>  
+            <td>003</td>  
+            <td>Sravani</td>  
+            <td>Australia</td>  
+            <td>7000</td>  
+          </tr>  
+           <tr>  
+            <td>004</td>  
+            <td>Amar</td>  
+            <td>India</td>  
+            <td>18000</td>  
+          </tr>  
+          <tr>  
+            <td>005</td>  
+            <td>Lakshmi</td>  
+            <td>India</td>  
+            <td>12000</td>  
+          </tr>  
+          <tr>  
+            <td>006</td>  
+            <td>James</td>  
+            <td>Canada</td>  
+            <td>50000</td>  
+          </tr>  
+          
+           <tr>  
+            <td>007</td>  
+            <td>Ronald</td>  
+            <td>US</td>  
+            <td>75000</td>  
+          </tr>  
+          <tr>  
+            <td>008</td>  
+            <td>Mike</td>  
+            <td>Belgium</td>  
+            <td>100000</td>  
+          </tr>  
+          <tr>  
+            <td>009</td>  
+            <td>Andrew</td>  
+            <td>Argentina</td>  
+            <td>45000</td>  
+          </tr>  
+          
+            <tr>  
+            <td>010</td>  
+            <td>Stephen</td>  
+            <td>Austria</td>  
+            <td>30000</td>  
+          </tr>  
+          <tr>  
+            <td>011</td>  
+            <td>Sara</td>  
+            <td>China</td>  
+            <td>750000</td>  
+          </tr>  
+          <tr>  
+            <td>012</td>  
+            <td>JonRoot</td>  
+            <td>Argentina</td>  
+            <td>65000</td>  
+          </tr>  
+        </tbody>  
+      </table> 
+      </section> 
+      </section>
+      </section-->
+ 
+
+ 
+ <style>
+ table.dataTable tbody td {padding: 8px 0 !important;}
+ table.dataTable {padding:8px 0px !important; }
+ .dataTables_wrapper{padding:15px 0 !important;}
+ .dataTables_wrapper .dataTables_filter input {margin-left: 0.5em;border: 1px solid #ccc;border-radius: 5px;margin-right: 10px;}
+ .dataTables_length{padding-left:15px;}
+ table.dataTable thead th, table.dataTable thead td {padding: 10px 16px !important;}
+ .dataTables_info{padding-left:15px; }
+ 
+ .dataTables_wrapper{width:100%; overflow-x:auto;}
+ </style>
+ 
+ <script>
+$(document).ready(function(){
+    $('#myTable').dataTable();
+     $('#myTable1').dataTable();
+});
+</script>
+ 
+ 
+</apex:page>

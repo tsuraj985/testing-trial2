@@ -1,0 +1,7 @@
+<apex:page standardController="Contact">
+   <apex:form >
+<apex:inputField value=" {!Contact.AssistantName}"/>
+ <p><a href="tel:{!Contact.AssistantPhone}">
+<apex:inputField value=" {!Contact.AssistantPhone}"/></a></p>
+ </apex:form>
+</apex:page>

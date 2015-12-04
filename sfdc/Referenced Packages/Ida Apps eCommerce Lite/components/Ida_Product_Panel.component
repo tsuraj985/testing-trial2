@@ -1,0 +1,87 @@
+<apex:component controller="idawcms.Ida_Product_Panel_Component_Controller">
+    <script type="text/javascript">
+        var currentOffset = new Array({!productsWithGroup.size});
+        var scrollDirection = new Array({!productsWithGroup.size});
+        function doScroll(index, totalSize)
+        {
+            if(currentOffset[index] == null || currentOffset[index] == "undefined")
+            {
+                currentOffset[index] = 0;
+            }
+            currentOffset[index] += scrollDirection[index];
+            if(currentOffset[index] < 0)
+            {
+                currentOffset[index] = 0;
+                return;
+            }
+            if(currentOffset[index] > totalSize-1)
+            {
+                currentOffset[index] = totalSize - 1;
+                return;
+            } 
+            var step = 200 * scrollDirection[index];
+            var attributes = { scroll: { by: [step, 0] } }; 
+            var anim = new YAHOO.util.Scroll('scroller'+index, attributes, 0.3); 
+            anim.animate();
+        }
+        var timeseed = 0;
+        function beginScroll(direction, index, totalSize)
+        {
+            scrollDirection[index] = direction; //1:right; -1: left;
+            doScroll(index, totalSize);
+            timeseed = setInterval("doScroll("+index+", "+totalSize+")", 300);
+        }
+        function endScroll()
+        {
+            clearInterval(timeseed);
+        }
+    </script>
+
+    <apex:variable value="{!0}" var="i"/>
+    <apex:repeat value="{!productsWithGroup}" var="item">
+        <table width="100%" border="0" cellspacing="0" cellpadding="5">
+            <tr>
+                <td style="padding-left:60px"><strong>{!item.Category}</strong></td>
+                <td style="padding-right:60px; text-align:right"><a href="#"><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/btn_viewall.gif')}" alt="View All" width="80" height="20" /></a></td>
+            </tr>
+        </table>
+        
+        <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_topbar.gif')}" width="670" height="15" /></div>
+        <div class="searchborders">
+            <div class="fs_catalog">
+                <table border="0" cellspacing="0" cellpadding="0" style="margin:0 auto">
+                    <tr>
+                        <td class="left">
+                            <a href="#" onclick="return false;" onmousedown="beginScroll(-1, '{!FLOOR(i)}', {!item.ProductsInfo.size})" onmouseup="endScroll()" onmouseout="endScroll()">
+                                <img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/spacer.gif')}" alt="More" width="30" height="40" />
+                            </a>
+                        </td>
+                        <td align="center" class="middle">
+                            <div style="overflow: hidden; width: 600px;" id="scroller{!FLOOR(i)}">
+                                <div style="width:100000px;">
+                                    <apex:repeat value="{!item.ProductsInfo}" var="product">
+                                        <apex:outputLink value="{!$Page.idawcms__IdaProductDetail}?id={!product.Id}">
+                                            <img src="{!product.ImageThumbnail}" alt="" width="165" height="185" />
+                                                <div>
+                                                    <apex:outputText value="{0,number,$#,###,###.00}">
+                                                        <apex:param value="{!product.StandardPrice}"/>
+                                                    </apex:outputText>
+                                                </div>
+                                        </apex:outputLink>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="right">
+                            <a href="#" onclick="return false;" onmousedown="beginScroll(1, '{!FLOOR(i)}', {!item.ProductsInfo.size})" onmouseup="endScroll()">
+                                <img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/spacer.gif')}" alt="More" width="30" height="40" />
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/search_btmbar.gif')}" width="670" height="15" /></div>
+        <apex:variable value="{!i+1}" var="i"/>
+    </apex:repeat>
+</apex:component>

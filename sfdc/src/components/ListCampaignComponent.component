@@ -1,0 +1,40 @@
+<apex:component controller="CalendarController">
+		<style>
+			.detailList{
+				width:100% !important;
+			}
+			.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader {
+				background-color: lightslategray;!important;
+			}
+		</style>
+		<apex:form >
+		<apex:pageblock title="Campaign Records">
+		  <apex:outputPanel id="buttonsId">
+		  	<apex:commandButton action="{!createNewCampaign}" title="New" value="New Campaign" />
+		  </apex:outputPanel>
+		   <apex:pageBlockSection title="(Total Records	: {!total_size})" collapsible="true">
+		   <apex:outputPanel id="myPanel">
+		   <apex:pageMessages id="theMessages" />
+		   <apex:pageBlockTable value="{!Campaigns}" var="c" align="center">
+		        <apex:column headerValue="Name">
+		        	<apex:outputLink value="/apex/EditCampaign?id={!c.Id}" id="theLink">{!c.Name}</apex:outputLink>
+		        </apex:column>
+		        <apex:column value="{!c.Active__c}" headerValue="Campaign Active" />
+		        <apex:column value="{!c.Suspended_By_Client__c}" headerValue="Campaign Suspended By Client" />
+		        <apex:column value="{!c.Campaign_Start__c}" headerValue="Campaign Start Date" />
+		        <apex:column value="{!c.Account_Executive__r.Name}" headerValue="Account Executive Name" />
+		        <apex:column value="{!c.Manager__r.Name}" headerValue="Manager Name" />
+		        <apex:column value="{!c.Print_Vendor__c}" headerValue="Print Vendor Name" />
+		        <apex:facet name="footer"><b>Showing Page # {!pageNumber} of {!totalPages}</b></apex:facet>
+		   </apex:pageBlockTable>
+		   	 <apex:outputPanel id="myButtons">
+		        <apex:commandButton action="{!Beginning}" title="Beginning" value="First" disabled="{!disablePrevious}" reRender="myPanel,myButtons"/>
+		        <apex:commandButton action="{!Previous}" title="Previous" value="Previous" disabled="{!disablePrevious}" reRender="myPanel,myButtons"/>        
+		        <apex:commandButton action="{!Next}" title="Next" value="Next" disabled="{!disableNext}" reRender="myPanel,myButtons"/>
+		        <apex:commandButton action="{!End}" title="End" value="Last" disabled="{!disableNext}" reRender="myPanel,myButtons"/>        
+		   </apex:outputPanel>
+		   </apex:outputPanel>
+		   </apex:pageBlockSection>
+		</apex:pageblock>
+		</apex:form>
+</apex:component>

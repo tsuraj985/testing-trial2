@@ -1,0 +1,17 @@
+<apex:page standardController="Account" extensions="CA_inLineVfPageOnAccount">
+<apex:form >
+<apex:pageblock >
+<apex:pageblocksection title="Account Parent Information" >
+            <apex:outputfield value="{!acc.Id}"/>
+            <apex:outputfield value="{!acc.name}"/>
+            <apex:outputField value="{!acc.phone}"/>            
+            <apex:inputField value="{!acc.ranking__c}"/>
+            <apex:outputField value="{!acc.ranking__c}"/>
+                         
+            
+             
+             </apex:pageblocksection>
+                   </apex:pageblock>
+                    <apex:commandButton action="{!onSave}" value="Save"/>
+  </apex:form>
+</apex:page>

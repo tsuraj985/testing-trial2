@@ -1,0 +1,461 @@
+<apex:page id="thepage"  controller="ExtjsOppController_Cls" contentType="text/html" extensions="OppLookupController_Cls" standardStylesheets="false" cache="true" sidebar="false">
+   <apex:pageMessages />
+   <apex:stylesheet value="{!$Resource.ExtJS4}/extjs-4.1.0/resources/css/ext-all.css" />
+   <apex:includeScript value="{!$Resource.ext_base}"/>
+    <apex:includeScript value="{!$Resource.ExtJS4}/extjs-4.1.0/ext-all.js"/> 
+    <apex:stylesheet value="{!URLFOR($Resource.Pipeline_Resource, 'css/opm.min.css')}"/>
+    <apex:includeScript value="{!$Resource.JqueryFile}"/> 
+    <apex:includeScript value="{!$Resource.ExtJS4}/extjs-4.1.0/override.js"/>
+    <apex:includeScript value="{!$Resource.ExportExcel}"/> 
+   <head>
+   <script>
+        function currencyAmount(){
+                window.location.href = '/apex/OppFilterPage';
+        }           
+        //FirstTimeCall();
+   </script>     
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+        
+   </head>
+   
+   <!-- main page css start-->
+    <style>
+    .linkCol{
+        font-family: Myriad Pro;
+        color: rgb(32,78,169);
+        font-size: 13px;
+        font-weight: bold;
+    }
+        .setRequireDiv div{
+        top: -18px; 
+        left: 72px; 
+        }
+        
+        .setsenchlookfeel{
+            border-color: #99bce8;
+            font-weight: Normal !important;
+        }
+        
+        .columnclass td  {
+        vertical-align: middle !important;
+        padding-left:5px;
+        padding-right:5px;
+        } 
+        
+        #oppFilterTable {
+            margin-left : -1%;
+        }
+        
+        #oppFilterTable input[type=button] {
+        width: auto;
+        padding: 3px;
+        }
+        
+       .myimagebutton {
+        background: url('{!URLFOR($Resource.Pipeline_Resource, 'images/lookupIcon.jpg')}') no-repeat !important;
+       }
+       .pbHeader{
+         background-color : #DFEBFA !important;
+       }
+       .bPageBlock{
+         border-color:  #DFEBFA !important;
+       }
+       
+       @media only screen and (max-width:360px)
+       {
+       body{color:#000; marign:50px; padding:0px; overflow:scroll !important ;}
+       }
+       .loadClass{
+            background-image:url('{!URLFOR($Resource.ajaxload)}');
+            top:0px;
+            bottom:0px;
+            left:0px;
+            right:0px;
+            margin:auto;
+            background-repeat:no-repeat;
+       }
+       .x-grid-with-row-lines .x-grid-cell-inner {
+            padding-bottom: 1px !important;
+        }
+        .x-grid-cell-inner {
+            padding: 1px 6px 3px !important;
+        }
+    </style>
+    <!-- main page css end-->
+    <!-- multiselect css start -->
+    <c:ExtFormPanel ></c:ExtFormPanel>
+    <c:ExtEditorWindow ></c:ExtEditorWindow>
+    <script>
+        function moveToRight(){var t=document.getElementById("thepage:theForm:leftPickList"),e=document.getElementById("{!$Component.theForm.rightPickList}"),o=e.length-1;for(i=0;i<t.options.length;i++)t.options[i].selected&&(e.options.add(new Option(t[i].text,t[i].value)),o++,e.options[o].selected=!0,t.options[i]=null,i--);getRightPickListvalues(e),sizePicklist(e),sizePicklist(t),e.focus()}function moveToLeft(){var t=document.getElementById("thepage:theForm:leftPickList"),e=document.getElementById("{!$Component.theForm.rightPickList}"),o=t.length-1;for(i=0;i<=e.options.length-1;i++)e.options[i].selected&&(t.options.add(new Option(e[i].text,e[i].value)),o++,t.options[o].selected=!0,e.options[i]=null,i--);getRightPickListvalues(e),sizePicklist(e),sizePicklist(t),t.focus()}function SelectSort(t){var e="",i="";for(x=0;x<t.length-1;x++)for(y=x+1;y<t.length;y++)t[x].text>t[y].text&&(e=t[x].value,i=t[x].text,t[x].value=t[y].value,t[x].text=t[y].text,t[y].value=e,t[y].text=i)}function getRightPickListvalues(t){var e=document.getElementById("{!$Component.theForm.getselectedId}"),i=[];for(x=0;x<t.length;x++)i.push(t[x].value);e.value=i}function sizePicklist(t){t.style.width=t.length>0?"auto":"100px"}function moveUpDown(t){var e=document.getElementById("{!$Component.theForm.rightPickList}"),i=e.selectedIndex;if(-1!=i){var o=e.options[i].value,n=e.options[i].text;increment="up"==t?-1:1,e.options[i].value=e.options[i+increment].value,e.options[i].text=e.options[i+increment].text,e.options[i+increment].value=o,e.options[i+increment].text=n,e.selectedIndex=i+increment,getRightPickListvalues(e),e.focus()}}function moveToTop(t){var e=document.getElementById("{!$Component.theForm.rightPickList}"),o=e.selectedIndex;if(-1!=o){var n=e.options[o].value,s=e.options[o].text;if("top"==t){for(i=o-1;i>=0;i--)e.options[i+1].text=e.options[i].text,e.options[i+1].value=e.options[i].value;e.options[0].text=s,e.options[0].value=n,e.selectedIndex=0}else{var l=e.options.length-1;for(i=e.selectedIndex+1;l>=i;i++)e.options[i-1].text=e.options[i].text,e.options[i-1].value=e.options[i].value;e.options[l].text=s,e.options[l].value=n,e.selectedIndex=l}getRightPickListvalues(e),e.focus()}}function selectAllOptions(t,e){var i=document.getElementById(t);if(null!=i)for(var o=0;o<i.options.length;o++)i.options[o].selected=e}
+        function PopupAssignNew(npid,npDescription){
+            //alert(npid);
+            
+            if (npid.substring(0, 3) == "001") {
+                $('[id$=phoneNameFieldId]').val(npid);
+                $('[id$=phoneNumber]').val(npDescription);
+            } else {            
+                $('[id$=phoneNameFieldId1]').val(npid);
+                $('[id$=phoneNumber1]').val(npDescription);
+            }
+            //alert($('[id$=phoneNameFieldId]').val())
+            
+        }
+
+    </script>
+    
+    <!-- multiselect css end  --> 
+    
+    <!-- apex:sectionHeader title="Grid Display" subtitle="Opportunity"/ -->   
+    <apex:form id="frmId"> 
+      <apex:actionfunction name="FirstTimeCall" action="{!FirstTimeCall}"  rerender="thepage,centerblck"  oncomplete="FirstTimeCall();"/>   
+      <div style="opacity:0;height:0;overflow:hidden;"> 
+          <apex:inputText id="oppId" value="{!opp.AccountId}"  />
+      </div>
+        
+      <!-- top filter panel start -->
+      <apex:outputPanel id="topPanel" layout="block" >
+      
+      <span class="help" style="position: absolute; white-space: nowrap;top: 18px;text-decoration: none;right:160px; margin-right:10px; padding-right:14px; border-right:1px solid #333;">
+       <a href="http://www.algoworks.com/User-Guide-Opportunity-Manager-v1.3.pdf" id="theLink" style="text-decoration: none;" target="_blank" class="linkCol">
+       <span class="linkSpan">User Guide </span>
+       </a>
+       <!--img src="/s.gif" alt="Help for this page (New Window)" class="helpIcon" title="Help for this page (New Window)"/--> 
+       
+      </span>
+      
+      
+            <apex:pageBlock title="Opportunities" id="centerblck" helpTitle="Help for this page" helpUrl="http://www.algoworks.com/crm/opportunity-manager.html">
+                    <table border="0" cellpadding="0" cellspacing="2" id="oppFilterTable" style="width:65%;float:left">
+                        <tbody>
+                            <tr>
+                                <td rowspan="2" >
+                                    <apex:outputLabel styleclass="setsenchlookfeel" value="{!$ObjectType.Opportunity.Fields.StageName.Label}" rendered="{!$ObjectType.Opportunity.fields.StageName.Accessible}"></apex:outputLabel>
+                                </td>
+                                <td rowspan="4">
+                                    <apex:selectList styleclass="setsenchlookfeel" value="{!stage}" multiselect="true" size="7" id="stgId">
+                                        <apex:selectOptions value="{!Stages}" rendered="{!$ObjectType.Opportunity.fields.StageName.Accessible}"/>
+                                    </apex:selectList>
+                                </td>
+                                <td><apex:outputLabel styleclass="setsenchlookfeel" value="{!$ObjectType.Opportunity.Fields.LeadSource.Label}" rendered="{!$ObjectType.Opportunity.fields.LeadSource.Accessible}">
+                                    </apex:outputLabel>
+                                </td>
+                                <td> 
+                                     <!--apex:inputField styleclass="setsenchlookfeel" value="{!oppList.LeadSource}" id="leadSrcId" rendered="{!$ObjectType.Opportunity.fields.LeadSource.Accessible}"/ -->
+                                     <!--apex:inputText styleclass="setsenchlookfeel" value="{!oppList.LeadSource}" id="leadSrcId" rendered="{!$ObjectType.Opportunity.fields.LeadSource.Accessible}"/-->
+                                     <apex:selectList styleclass="setsenchlookfeel" value="{!leadSourceField}" size="1" >
+                                        <apex:selectOptions value="{!LeadSource}" rendered="{!$ObjectType.Opportunity.fields.LeadSource.Accessible}"></apex:selectOptions>
+                                     </apex:selectList>
+                                </td>
+                                <td><apex:outputLabel styleclass="setsenchlookfeel" value="Timeframe" rendered="{!$ObjectType.Opportunity.fields.CloseDate.Accessible}"/></td>
+                                <td> <apex:selectList styleclass="setsenchlookfeel" value="{!time1}" size="1" >
+                                        <apex:selectOptions value="{!TimeFrame}" rendered="{!$ObjectType.Opportunity.fields.CloseDate.Accessible}"></apex:selectOptions>
+                                     </apex:selectList>
+                                </td> 
+                            </tr>
+                            <tr>
+                            <td><apex:outputLabel styleclass="setsenchlookfeel" value="{!$ObjectType.Opportunity.Fields.Type.Label}" rendered="{!$ObjectType.Opportunity.fields.Type.Accessible}" /></td>
+                            <td>
+                                <!-- apex:inputField styleclass="setsenchlookfeel" value="{!oppList.Type}" id="typId" rendered="{!$ObjectType.Opportunity.fields.Type.Accessible}"/ -->
+                                <!--apex:inputText styleclass="setsenchlookfeel" value="{!oppList.Type}" id="typId" rendered="{!$ObjectType.Opportunity.fields.Type.Accessible}"/-->
+                                <apex:selectList styleclass="setsenchlookfeel" value="{!oppTypeField}" size="1" >
+                                    <apex:selectOptions value="{!Type}" rendered="{!$ObjectType.Opportunity.fields.Type.Accessible}"></apex:selectOptions>
+                                </apex:selectList>
+                            </td>
+                             <td> &nbsp;</td>
+                             <td>
+                                <apex:inputCheckbox style="border-color: #99bce8;" value="{!isOwnerChecked}" id="ownCB"  title="View only own records"/>
+                                <apex:outputLabel style="font-weight: Normal !important;" value="Only own records" for="ownCB" title="View only own records" styleClass="checkLabel"></apex:outputLabel>
+                            </td> 
+                                 
+                               
+                                
+                              
+                            </tr>
+                            <tr>
+                                <td rowspan="2" style="text-align:right;">
+                                    <apex:inputCheckbox style="border-color: #99bce8;" id="allCB" onchange="selectAllOptions('{!$Component.stgId}',this.checked);" rendered="{!$ObjectType.Opportunity.fields.StageName.Accessible}"/>
+                                    <apex:outputLabel style="font-weight: Normal !important;" for="allCB" title="Toggle all/none" styleClass="checkLabel" value="All" rendered="{!$ObjectType.Opportunity.fields.StageName.Accessible}"></apex:outputLabel>
+                                   
+                                </td>
+                                <td><apex:outputLabel styleclass="setsenchlookfeel" value="{!$ObjectType.Opportunity.Fields.ForecastCategory.Label}" rendered="{!$ObjectType.Opportunity.fields.ForecastCategory.Accessible}" /></td>
+                                <td>
+                                        <apex:selectList styleclass="setsenchlookfeel" value="{!forecastCategory}" size="1" id="ForecastCategoryId">
+                                            <apex:selectOptions value="{!Forecast}" rendered="{!$ObjectType.Opportunity.fields.ForecastCategory.Accessible}"></apex:selectOptions>                                   
+                                        </apex:selectList>  
+                                </td>
+                                <td>
+                                        <apex:outputLabel styleclass="setsenchlookfeel" value="Account" rendered="{!$ObjectType.Opportunity.fields.AccountId.Accessible}"></apex:outputLabel>
+                                </td>
+                                <script>
+                                    function removeValueFromLookUp2(aa){
+                                        alert(aa.value);
+                                    }
+                                </script>
+                                 <apex:actionFunction name="removeValueFromLookUp" action="{!removeValueFromLookUp}" reRender="phoneNumber,phoneNameFieldId">
+                                     <apex:param name="test" assignTo="{!nameofCampaingnOrAccount}" value=""/>
+                                 </apex:actionFunction>
+                                 <apex:actionFunction name="removeValueFromLookUp1" action="{!removeValueFromLookUp1}" reRender="phoneNumber1,phoneNameFieldId1">
+                                     <apex:param name="test" assignTo="{!nameofCampaingnOrAccount1}" value=""/>
+                                 </apex:actionFunction>
+                                 <td>
+                                    <!-- apex:inputField styleclass="setsenchlookfeel" value="{!oppList.AccountId}" id="accId" rendered="{!$ObjectType.Opportunity.fields.AccountId.Accessible}"/ -->
+                                    <!-- apex:inputHidden value="{!oppList.AccountId}" id="accId" rendered="{!$ObjectType.Opportunity.fields.AccountId.Accessible}"/-->
+                                    <input  onkeyup="removeValueFromLookUp(this)" type="text" id="phoneNumber" value="{!oppAccountName}"/>
+                                    <apex:inputHidden id="phoneNameFieldId" value="{!oppList.AccountId}"/>
+                                    <a href="#" id="acc3_lkwgt" onclick="openLookupPopup();" tabindex="2" title="Parent Account Lookup (New Window)">
+                                        <img src="/s.gif" alt="Parent Account Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Parent Account Lookup (New Window)"/>
+                                    </a>
+                                 </td>
+                            
+                            </tr>
+                            <tr>
+                             <td><apex:outputLabel styleclass="setsenchlookfeel" value="Open|Closed"/>
+                                </td>
+                                    <td>
+                                        <apex:selectList styleclass="setsenchlookfeel" value="{!openClosed}" size="1" id="openClosedId">
+                                            <apex:selectOptions value="{!OpenOpp}"></apex:selectOptions>
+                                        </apex:selectList>
+                                    </td>
+                                
+                                <td>
+                                    <apex:outputLabel styleclass="setsenchlookfeel" value="Campaign" rendered="{!$ObjectType.Opportunity.fields.CampaignId.Accessible}"></apex:outputLabel>
+                                 
+                                </td>
+                                
+                                <td>
+                                        <!-- apex:inputField styleclass="setsenchlookfeel" value="{!oppList.CampaignId}" id="cmpId" rendered="{!$ObjectType.Opportunity.fields.CampaignId.Accessible}"/ -->
+                                    <input onkeyup="removeValueFromLookUp1(this)" id="phoneNumber1" type="text" value="{!oppCampaignName}"/>
+                                    <apex:inputHidden id="phoneNameFieldId1" value="{!oppList.CampaignId}"/>
+                                    <a href="#" id="acc3_lkwgt" onclick="openLookupPopup1();" tabindex="2" title="Parent Campaign Lookup (New Window)">
+                                        <img src="/s.gif" alt="Parent Campaign Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Parent Campaign Lookup (New Window)"/>
+                                    </a>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td >
+                                &nbsp;
+                                </td>
+                                <td style="padding-top: 10px;" colspan = "5">
+                                        
+                            <apex:commandButton styleclass="setsenchlookfeel" value="Query" action="{!renderPanel}" />  
+                             
+                            <apex:commandButton styleclass="setsenchlookfeel" value="Reset Filter" style="margin-left: 10px;" action="{!resetFilter}" oncomplete="currencyAmount();"/><!--reRender="topPanel,componentRender" status="ajaxId"/-->
+                             <apex:commandLink value="Export To Excel" action="{!ex2ex}" target="_blank" styleclass="btn setsenchlookfeel" style="margin-left: 7px;text-decoration: none;padding: 3px 3px 3px 3px;"/>
+                                <!--apex:param name="f" value="{!filterparams}"/>
+                            </apex:commandButton-->
+                            <!--a class="btn setsenchlookfeel" target="_blank" href="/apex/Export2ExcelGrid?f={!exportFilter}" style="margin-left: 7px;text-decoration: none;padding: 3px 3px 3px 3px;">Export To Excel</a-->
+                            <br/><br/>
+                           <apex:actionStatus id="ajaxId" startText="Loading...." ></apex:actionStatus>   
+                          
+                                </td>
+                            </tr>
+                            <tr>
+                            <td colspan = "6" align="center">
+                            <span style="font-family: Myriad Pro;color: #000;font-size: 13px; margin-bottom: 12px;">
+                                <p style="padding-left: 17px;">
+                                Field-level filtering options are available for each <b>column</b>.
+                                <br/>
+                              To access filters, <b>hover over</b> the field name and <b>click on the down arrow</b>, then select the desired filters.
+                                </p>
+                            <br/>
+                                  <p style="padding-left: 17px;position:relative;padding-bottom:5px;"><b>Double click</b> on the particular Opportunity record to edit it.
+                                <br/><br/>To know more about Algoworks, please visit "<a href="http://www.algoworks.com/crm" style="color:rgb(32,78,169);font-weight: bold;text-decoration:none;" target="_blank">www.algoworks.com/crm</a>".
+                                <br/><br/>For any queries / suggestions, please contact us at "<a href="mailto:oppmanager@algoworks.com" target="_blank" style="color:rgb(32,78,169);font-weight: bold;text-decoration:none;">oppmanager@algoworks.com</a>".
+                              <a href="http://www.algoworks.com/crm" style="color:rgb(32,78,169);font-weight: bold;text-decoration:none;" target="_blank">
+                                  <img style="width: 200px;position: absolute;margin-right: 10px;right: 0;top: 39px;" src="{!URLFOR($Resource.CompnayLogo)}"/> 
+                              </a>
+                          </p>
+                           </span>
+                           
+                            </td>
+                            </tr>
+                            
+                        </tbody>
+                        
+                    </table>
+                    
+                    
+                   
+                                          <apex:outputPanel id="chartIframe"  >
+                       
+                        <apex:iframe id="chartFrameId" src="/apex/ChartPage?filterparams={!URLENCODE(filterparams)}" width="35%" height="320px">
+                        </apex:iframe>
+                        
+                        </apex:outputPanel>
+                        <!--
+                  <span style="display: inline-block;font-size: 13px; margin-bottom: 12px;">Field-level filtering options are available for each column. <br/> To access filters, hover over the field name and click on the down arrow, then select the desired filters. </span>
+                  <br/><span style="display: inline-block;background-color: Yellow; font-size: 13px; margin-bottom: 12px;">Double click on the particular Opportunity record to edit it.</span>
+                  -->
+            </apex:pageBlock>
+             </apex:outputPanel>
+                       
+             
+             <!-- 
+             <script>
+                function check(){
+                    
+                    alert("Stage pie chart is prepared");
+                }
+             </script>  
+                 -->
+                
+                 <!--apex:outputPanel layout="block" id="chartpanel">
+                 <script>
+                 var panel1 = Ext.create('widget.panel', {
+                                width: 450,
+                                height: 300,
+                                title: 'Semester Trends',
+                                renderTo: '{!$Component.chartpanel}',
+                                layout: 'fit',
+                                items : [
+                                             {
+                                                   
+                                                    xtype: 'box',
+                                                    layout:'fit',
+                                                        autoEl: {
+                                                            tag: 'iframe',
+                                                            layout:'fit',
+                                                            height: 600,
+                                                            src: '/apex/ChartPage' 
+                                                        }   
+                                                    }]
+                                
+                                });
+               </script>
+                 </apex:outputPanel>
+           
+             <!-- top filter panel end -->
+           </apex:form> 
+              
+   
+    
+    <apex:form id="theForm">
+        <apex:pageMessages ></apex:pageMessages>
+        
+        
+
+        <apex:inputHidden value="{!getSelectedValues}" id="getselectedId"/> 
+        
+        
+        
+        <!-- apex:pageBlock tabStyle="Opportunity" id="compBlock" -->
+          <apex:outputpanel id="componentRender"> 
+
+              <div style="align:centre;">
+                
+                 <c:ExtjsGridComp_Comp id="lwComp" title="Opportunities" object="Opportunity" viewlabel="{!selListView}" viewfilter="{!filterparams}" viewcols="{!collist}" viewscope="{!listViewScope}"  rows="20" minimized="false" />
+              </div>
+          </apex:outputpanel>   
+                     
+        <!-- /apex:pageBlock -->
+        <br/> 
+        <apex:inputHidden value="{!selOppId}" id="extSelOppId"/>
+        <apex:outputPanel id="childTabFrame">
+            <!--   <apex:iframe src="/apex/tabPanel?id={!selOppId}" frameborder="true"  /> -->
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="reloadTabPanel" reRender="childTabFrame" />
+        
+    </apex:form>  
+    
+    <!--apex:form >
+        <apex:inputHidden value="{!opp.AccountId}" id="theHiddenInput"/>
+         <apex:actionfunction name="callonload" action="{!ResetAllField}"  rerender="thepage,centerblck"  oncomplete="callonload();"/>
+    </apex:form-->
+    
+     <script>
+        
+        var x = document.getElementsByClassName('x-menu-item-unchecked').Text;
+        //alert('dsgdsa'+x);
+        $('.x-grid-cell-gridcolumn-1029').css('color', 'red');
+        
+    </script>
+    <apex:outputPanel id="scrid">
+    <!--  script>
+        function test(){ 
+        if({!flag} != true){
+              
+              $("[id$='stgId']").val("{!stageField}");
+              $("[id$='leadSrcId']").val("{!leadSourceField}");
+              $("[id$='typId']").val("{!oppTypeField}");
+              $("[id$='tframe']").val("{!timeFrameField}");
+              $("[id$='ownCB']").val("{!ownerCheckedField}");
+              //$("input[id$='allCB']").val();
+              $("[id$='ForecastCategoryId']").val("{!forecastCategoryField}");
+              $("[id$='accId']").val("{!accountField}");
+              $("[id$='openClosedId']").val("{!openClosedField}");
+              //console.log("asd"+document.getElementById('thepage:frmId:centerblck:stgId').value);
+              //console.log({!stageField});
+              //$("input[id$='cmpId']").val($("input[id$='firstname']").val());
+          }
+        }
+        //test();
+        
+    </script> -->
+    </apex:outputPanel>
+    <script>
+        //FirstTimeCall();   
+        //$("[id$='chartFrameId']").attr('src', $("[id$='chartFrameId']").attr('src'));  
+          
+    </script>
+    <script>
+        $(window).load(function(){
+            $('#tabpanel-1072-body').addClass('loadClass');
+            FirstTimeCall();
+        });
+    </script>
+    <script> 
+    var newWin=null;
+    function openLookupPopup(){ 
+       var objectName = $('select[id$=selectedObjectId]').val();
+       var fieldName = $('select[id$=selectfield]').val();
+       try{            
+            /*if(objectName == 'undefined' || objectName == '' || objectName == null){
+                alert('Error: Please select the Object name!');
+            }else if(fieldName == 'undefined' || fieldName == '' || fieldName == null){
+                alert('Error: Please select a Field Name!');
+            }
+            else{*/
+               
+               var url= '{!JSENCODE("/apex/CustomLookUp?oN="+'Account'+"&fN="+'Id'+"&core.apexpages.devm0ode.url=1")}';
+               //alert(url);
+               newWin=window.open(url, 'Popup','height=400,width=650,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+               if (window.focus){
+                    newWin.focus();
+               }
+            /*}*/
+        }catch(e){
+                alert('Server Error: '+e);
+        }                   
+        return false;
+    }
+    function openLookupPopup1(){ 
+       var objectName = $('select[id$=selectedObjectId]').val();
+       var fieldName = $('select[id$=selectfield]').val();
+       try{            
+            /*if(objectName == 'undefined' || objectName == '' || objectName == null){
+                alert('Error: Please select the Object name!');
+            }else if(fieldName == 'undefined' || fieldName == '' || fieldName == null){
+                alert('Error: Please select a Field Name!');
+            }
+            else{*/
+               var url= '{!JSENCODE("/apex/CustomLookup?oN="+'Campaign'+"&fN="+'Id'+"&core.apexpages.devmode.url=1")}';
+               newWin=window.open(url, 'Popup','height=400,width=650,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+               if (window.focus){
+                    newWin.focus();
+               }
+            /*}*/
+        }catch(e){
+                alert('Server Error: '+e);
+        }                   
+        return false;
+    }                      
+    function closeLookupPopup(){
+       if (null!=newWin)
+       {
+          newWin.close();
+       }  
+    }
+    </script> 
+</apex:page>

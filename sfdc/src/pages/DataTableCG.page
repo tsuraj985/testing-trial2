@@ -1,0 +1,24 @@
+<apex:page controller="DataTableHelper">
+<apex:form >
+<apex:pageBlock >
+ <apex:dataTable value="{!Accounts}" var="Account" border="1" style="width:50%" cellpadding="20" align="center">
+ <apex:column headerValue="Account Name">
+ <apex:outputText value="{!Account.Name}"/>
+ </apex:column>
+ <apex:column headervalue="Account Number">
+ <apex:outputText value="{!Account.AccountNumber}"/>
+ </apex:column>
+ <apex:column headervalue="Rating">
+ <apex:outputText value="{!Account.Rating}"/>
+ </apex:column>
+ <apex:column headerValue="PhoneNumber">
+ <apex:outputText value="{!Account.Phone}"/>
+ </apex:column>
+ <apex:column HeaderValue="Region">
+ <apex:outputText value="{!Account.Region__c}"/>
+ </apex:column>
+ </apex:dataTable>
+ <apex:commandButton value="Reset"  onclick="return resetForm(this);"/>
+ </apex:pageBlock>  
+ </apex:form>
+</apex:page>

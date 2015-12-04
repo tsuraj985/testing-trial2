@@ -1,0 +1,18 @@
+<apex:page controller="CalendarController" sidebar="false" readOnly="true">
+	<apex:form >
+	<apex:outputLink value="/apex/ZipCodeSearch" style="  color: blue;font-size: larger;"  id="theLink">LookUp ZipCode</apex:outputLink>
+	</apex:form>	
+ 	<apex:outputPanel id="campaignListPanel" rendered="{!showCalendarAndCampaigns}">	
+ 		<c:CalendarComponent />
+ 		<c:ListCampaignComponent />
+ 	</apex:outputPanel>
+ 	
+   	<apex:outputPanel id="newCampaignPanel" rendered="{!showNewCampaignWindow}">
+	   <c:CampaignComponent />
+	</apex:outputPanel>   
+
+	<apex:outputPanel id="campaignDetailPanel" rendered="{!showCampaignDetailsWithDrops}">
+	   <!-- <c:DropComponent />-->
+	</apex:outputPanel>
+
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:composition template="idawcms__IdaSiteTemplate">
+        <!-- Content Area -->
+        <apex:define name="body">
+            <div class="fs_contentarea">
+                <c:Ida_Vertical_Menu linkUrl="{!$Page.idawcms__IdaSearch}"/>
+                
+                <br class="clearfloat" />
+                
+                <c:Ida_Section />
+                
+                <c:Ida_Banner bannerType="Main Page" linkUrl="{!$Page.idawcms__IdaProductDetail}"/>
+            </div>
+        </apex:define>
+        <!-- Content Area Ends -->
+    </apex:composition>
+</apex:page>

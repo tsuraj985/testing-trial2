@@ -1,0 +1,357 @@
+<apex:component controller="CalendarController" allowDML="true">
+	<apex:form id="form1Id" >
+	<apex:sectionHeader title="Campaign Edit" subtitle="New Campaign"/>
+      <html>
+      <body>
+	      <apex:pageBlock title="Campaign Edit " >
+			 <apex:PageBlockButtons id="myButtons">
+			        <apex:commandButton action="{!onCampaignSave}" title="Save" value="Save" />
+			        <apex:commandButton action="{!onCampaignSaveAndNew}" title="Save & New " value="Save & New" />
+			        <apex:commandButton action="{!onCancelCampaign}" title="Cancel" value="Cancel" />        
+			</apex:PageBlockButtons>
+	      		 <table>
+	      		 	<tr>
+	      		 		<td >
+	      		 			<apex:outputText value="Campaign Name" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<!-- <apex:inputField value="{!campaignObj.Name}" />-->
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td >
+	      		 			<apex:outputText value="Campaign Status" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Campaign_Status__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Design Approved by Client" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Design_Approved_by_Client__c}" />
+	      		 		</td>
+	      		 		
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Auto Mail Drops" />&nbsp;&nbsp;&nbsp;
+	      		 			<apex:inputField value="{!campaignObj.Auto_Mail_Drops__c}" />&nbsp;&nbsp;&nbsp;
+	      		 		 	</td>
+	      		 		 	<td>
+	      		 		 	<apex:outputText value="Non-Auto Mail Drops" />&nbsp;&nbsp;&nbsp;
+	      		 			<apex:inputField value="{!campaignObj.Non_Auto_Mial_Drops__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="P&A Forms Out" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.P_A_Forms_Out__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Digital file recieved from designer" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Digital_file_recieved_from_designer__c}" />
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Contact" />
+	      		 		</td>
+	      		 		<td>
+	      		 		 	<apex:inputField value="{!campaignObj.Contact__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="P&A Forms In" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.P_A_Forms_In__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="First Proof mailed to designer" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.First_Proof_mailed_to_designer__c}" />
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Campaign Start date" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Campaign_Start__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Design uploaded to vendor" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Design_Uploaded_to_Vendor__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Second Proof mailed to designer" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Second_Proof_mailed_to_designer__c}" />
+	      		 		</td>		
+	      		 	</tr>
+	      		 	<tr>
+	      		 	<!--<td>
+	      		 			<apex:outputText value="Manager" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Manager__c}"/>
+	      		 		</td>-->
+	      		 		<td>
+	      		 			<apex:outputText value="Gen/send printing PO" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Gen_Send_printing_PO__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Proof Approved by Designer" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Proof_Approved_by_Designer__c}" />
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Account Executive" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Account_Executive__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Purchase client's mail list" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Purchase_client_s_mail_list__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Final proof approval/designer rec." />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Final_proof_approval_designer_rec__c}" />
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Designer" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<!-- <apex:inputField value="{!campaignObj.}"/>-->
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Upload Mail list Receipt" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Upload_Mail_list_Recipent__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Projected print date" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Projected_print_date__c}" />
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Mailer Size" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Mailer_Size__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Email list to Epsilon for DSF2" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Email_List_to_Epsilion_for_DSF2__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Vendor Confirm 1st Drop Date" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Vendor_Confirm_1st_Drop_Date__c}" />
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Design Done Due Date" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Design_Done_Due_Date__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="DSF2 Recieved from Epsilon" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.DSF2_Recieved_from_Epsilon__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Received sched, list, mdcf" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Recieved_sched_list_mdfc__c}" />
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Print Vendor" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Print_Vendor__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Testing Call Tracking Line for Accuracy" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Testing_Call_Tracking_Line_for_Accuracy__c}" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Vendor Job Number" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Vendor_Job_Number__c}" />
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Call Tracking Vendor" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Call_Tracking_Vendor__c}"/>
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Call Tracking Vendor Phone	" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Call_Tracking_Vendor_Phone__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Email Client Call tracking information" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Email_Client_Call_tracking_information__c}"/>
+	      		 		</td>
+	      		 			
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Total Targets" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Total_Targets__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Set up monthly tracking for sales rep" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Set_up_monthly_tracking_for_sales_rep__c}"/>
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Mailers Per Target" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Mailers_Per_Target__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Notify Gayle - Bill Setup & monthly fees" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Notify_Gayle_Bill_Setup_monthly_fe__c}"/>
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Total # of Mailers" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Total_of_Mailers__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Zip Code Clean Up" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Zip_Code_Clean_up__c}"/>
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="# of Mail Drops" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<!-- <apex:inputField value="{!campaignObj.}"/>-->
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Break list" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Break_List__c}"/>
+	      		 		</td>	
+	      		 		
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Mail full list first drop" />
+	      		 		</td>
+	      		 		<td>
+	      		 		<apex:inputField value="{!campaignObj.Mail_full_list_first_drop__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Create Prelim Mail Schedule" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Create_Prelim_Mail_Schedule__c}"/>
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Direct Mail Campaign #" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Direct_Mail_Campaign__c}"/>
+	      		 		</td>	
+	      		 		<td>
+	      		 			<apex:outputText value="Email final sched, list, mdcf to vendor" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Email_final_sched_list_mdfc_to_vendo__c}"/>
+	      		 		</td>
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 			<apex:outputText value="Mailers Remaining" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Mailers_Remaining__c}"/>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Email final mail schedule to client" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Email_final_mail_schedule_to_client__c}"/>
+	      		 		</td>	
+	      		 	</tr>
+	      		 	<tr>
+	      		 		<td>
+	      		 		</td>
+	      		 		<td>
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:outputText value="Gen/send LSPO#1" />
+	      		 		</td>
+	      		 		<td>
+	      		 			<apex:inputField value="{!campaignObj.Gen_Send_LSPO_1__c}"/>
+	      		 		</td>	
+	      		 	</tr>
+	      		  </table>
+	      </apex:pageBlock>
+      </body>
+      </html>
+      </apex:form>
+</apex:component>

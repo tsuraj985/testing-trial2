@@ -1,0 +1,17 @@
+<apex:page controller="dataTableCG">
+ <apex:pageBlock title="Search By Names">
+ <apex:form >
+    <apex:pageBlockSection title="Input Search Name">
+          <apex:inputText value="{!inputValue}" label="Input"/>
+          <apex:commandButton value="Search" action="{!search}" />
+          <apex:commandButton value="Clear" action="{!clear}"/>
+    </apex:pageBlockSection>
+     <apex:dataTable value="{!accList}" var="acc" border="1" style="width:50%" align="center">
+         <apex:column value="{!acc.Name}" headerValue="Name"/>
+         <apex:column value="{!acc.Phone}" headerValue="Phone"/>
+         <apex:column value="{!acc.BillingCity}" headerValue="City"/>
+         <apex:column value="{!acc.BillingPostalCode}" headerValue="Postal Code"/>
+     </apex:dataTable>
+ </apex:form>
+ </apex:pageBlock>
+</apex:page>

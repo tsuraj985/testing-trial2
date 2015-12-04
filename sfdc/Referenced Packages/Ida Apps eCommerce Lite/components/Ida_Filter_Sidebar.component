@@ -1,0 +1,13 @@
+<apex:component controller="idawcms.Ida_General_Component_Controller">
+    <apex:attribute name="linkUrl" type="String" description="the url of the link page"/>
+    <p>Shopping Options</p>
+    
+    <apex:repeat value="{!groupingFilters}" var="item">
+        <p><strong>{!item.Category}</strong></p>
+        <p style="padding-left:20px">
+            <apex:repeat value="{!item.Filters}" var="filter">
+                <a href="{!linkUrl}?menuItem={!URLENCODE($CurrentPage.parameters.menuItem)}&filter={!URLENCODE(filter.Name)}">{!filter.Name}</a><br />
+            </apex:repeat>
+        </p>
+    </apex:repeat>
+</apex:component>

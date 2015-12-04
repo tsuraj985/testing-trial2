@@ -1,0 +1,7 @@
+<apex:page standardController="Account">
+<social:profileViewer entityId="{!Account.id}" />
+<br/><br/><br/><br/><br/><br/>
+<topics:widget entity="{!Account.id}" renderStyle="simple" />
+<chatter:feedWithFollowers entityId="{!Account.id}"/>
+<apex:detail subject="{!Account}" title="false" inlineEdit="true"/>
+</apex:page>

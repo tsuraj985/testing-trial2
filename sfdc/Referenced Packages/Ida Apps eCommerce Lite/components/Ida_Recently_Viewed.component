@@ -1,0 +1,134 @@
+<apex:component >
+    <apex:attribute name="totalSaved" type="Integer" default="20" description="the total record will be saved for viewer"/>
+    <apex:attribute name="linkUrl" type="String" description="the url of the link page"/>
+    
+    <script type="text/javascript">var __sfdcSessionId = "{!$Api.Session_ID}";</script>
+    <script src="/soap/ajax/15.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/15.0/apex.js" type="text/javascript"></script>
+    
+    <div class="fs_catalog" id="catalog_history"></div>
+    
+    <script type="text/javascript">
+        var currentOffset_history = 0;
+        var scrollDirection_history = 0;
+        function doScroll_history(totalLength)
+        {
+            currentOffset_history += scrollDirection_history;
+            if(currentOffset_history < 0)
+            {
+                currentOffset_history = 0;
+                return;
+            }
+            if(currentOffset_history > totalLength-1)
+            {
+                currentOffset_history = totalLength - 1;
+                return;
+            }            
+            var step = 200 * scrollDirection_history;
+            var attributes = { scroll: { by: [step, 0] } }; 
+            var anim = new YAHOO.util.Scroll('scroller_history', attributes, 0.3); 
+            anim.animate();
+        }
+        var timeseed_history = 0;
+        function beginScroll_history(direction, totalLength)
+        {
+            scrollDirection_history = direction; //1:right; -1: left;
+            doScroll_history(totalLength);
+            timeseed_history = setInterval("doScroll_history("+totalLength+")", 300);
+        }
+        function endScroll_history()
+        {
+            clearInterval(timeseed_history);
+        }
+        
+        function getCookieValue(key)
+        {
+            var arrCookie = document.cookie.split(";");
+            for(var i = 0; i < arrCookie.length; i++)
+            {
+                var arr = arrCookie[i].split("=");
+                if(arr[0].trim() == key)
+                {
+                    if(typeof arr[1] == "undefined")
+                    {
+                        return "";
+                    }
+                    else
+                    {
+                        return arr[1];
+                    }
+                }
+            }
+            return "";
+        }
+        String.prototype.trim = function()
+        {
+            return this.replace(/(^\s*)|(\s*$)/g, "");
+        }
+        
+        //Create banner from the webService
+        function createBanner(recentProducts)
+        {
+            var catalog_histroy = document.getElementById("catalog_history");
+            catalog_histroy.innerHTML = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin:0 auto\">"+
+                                            "<tr>"+
+                                                "<td class=\"left\">"+
+                                                    "<a href=\"#\" onclick=\"return false;\" onmousedown=\"beginScroll_history(-1, recentProducts.length)\" onmouseup=\"endScroll_history()\" onmouseout=\"endScroll_history()\">"+
+                                                    "<img src=\"{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/spacer.gif')}\" alt=\"More\" width=\"30\" height=\"40\" />"+
+                                                    "</a>"+
+                                                "</td>"+
+                                                "<td align=\"center\" class=\"middle_full\">"+
+                                                    "<div style=\"overflow: hidden; width: 740px\" id=\"scroller_history\">"+
+                                                        "<div style=\"width:100000px;\" id=\"product_history\"></div>"+
+                                                    "</div>"+
+                                                "</td>"+
+                                                "<td class=\"right\">"+
+                                                    "<a href=\"#\" onclick=\"return false;\" onmousedown=\"beginScroll_history(1, recentProducts.length)\" onmouseup=\"endScroll_history()\">"+
+                                                        "<img src=\"{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/spacer.gif')}\" alt=\"More\" width=\"30\" height=\"40\" />"+
+                                                    "</a>"+
+                                                "</td>"+
+                                            "</tr>"+
+                                        "</table>"; 
+            
+            var products_html = '';
+            for(var i = 0; i < recentProducts.length; i++)
+            {
+                var detailPage = "{!linkUrl}?id=" + recentProducts[i].ProductId;
+                products_html += "<a href=\"" + detailPage + "\">" +
+                                    "<img src=\"" + recentProducts[i].ProductImageThumbnail +
+                                    "\" alt=\"\" width=\"83\" height=\"93\" />" +
+                                    "<p>"+recentProducts[i].ProductName+"<br />" +
+                                    "$"+recentProducts[i].ProductStandardPrice+"</p></a>";
+            }
+            document.getElementById("product_history").innerHTML = products_html;
+        }
+        
+        //Add the current productId to the cookie after populating the banner
+        function populateNewCookie(productIds)
+        {
+            var currentPageId = "{!$CurrentPage.parameters.id}"; // get the id from the url 
+            var arrIds = productIds.split(",");
+           
+            for(var j = 0; j < arrIds.length; j++) // judgement whether the id has been in the cookies
+            {
+                if(arrIds[j].trim() == currentPageId.trim())
+                {
+                    productIds = productIds.replace(","+currentPageId.trim(),"");
+                }
+            }
+            document.cookie = "recentlyProducts="+productIds+","+currentPageId+";"; // add the id to the currentpage cookie   
+        }
+        
+        var ids = getCookieValue("recentlyProducts"); // get the ids from cookies
+        try
+        {
+            var recentProducts = sforce.apex.execute('idawcms.Ida_Service', "getProductsInfo", {productIds:ids});
+            if(recentProducts.length > 0)
+            {
+                createBanner(recentProducts);
+            }
+            populateNewCookie(ids);
+        }
+        catch(ex){alert(ex);}
+    </script>
+</apex:component>

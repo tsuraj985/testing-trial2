@@ -1,0 +1,18 @@
+<apex:page controller="lonchangeaccount">
+<apex:form >
+    <apex:pageBlock >
+         <apex:actionFunction action="{!Contactlst}" name="change"/>
+         <apex:selectList value="{!aid}" multiselect="false" size="1" onchange="change();">
+                <apex:selectOptions value="{!values}"/>
+            </apex:selectList>
+          <apex:outputPanel rendered="{!render}" id="balu">
+              <apex:pageBlockTable value="{!lstcont}" var="c">
+                      <apex:column value="{!c.Lastname}"/>
+              </apex:pageBlockTable>
+         
+         </apex:outputPanel>
+   
+    </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

@@ -1,0 +1,27 @@
+<apex:page Controller="accountscroll">
+<apex:pageBlock title="Accountscrolllist" >
+<style type="text/css">
+         .scroll
+         {
+            display:block;
+            border: 3px solid red;
+            padding:5px;
+            margin-top:5px;
+            width:200px;
+            height:150px; 
+            overflow:scroll;
+         }
+      </style>
+      <apex:form >
+      <apex:pageBlockTable value="{!accountList}" var="acc" styleClass="scroll">
+
+      <apex:column headerValue="Account">
+      <apex:outputLink value="/{!acc.id}">"{!acc.name}"</apex:outputLink>
+      </apex:column>
+             <apex:column value="{!acc.Phone}"/>
+             <apex:column value="{!acc.Fax}"/>
+             <apex:column value="{!acc.site}"/> 
+    </apex:pageBlockTable>
+    </apex:form>
+    </apex:pageBlock>
+    </apex:page>

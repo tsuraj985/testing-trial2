@@ -1,0 +1,20 @@
+<apex:page standardController="idawcms__Ida_Setup__c" extensions="idawcms.Ida_Setup_Clone_Controller" title="Ida Setup Edit: New Ida Setup">
+    <apex:sectionHeader title="Ida Setup Edit" subtitle="New Ida Setup" />
+    <apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+    
+        <apex:pageBlock title="Ida Setup Edit" mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Information" columns="1">
+                <apex:inputField value="{!idaClonedSetup.Name}" required="true"/>
+                <apex:inputField value="{!idaClonedSetup.idawcms__Ida_Setup_Description__c}" style="width: 400px;"/>
+                <apex:inputField value="{!idaClonedSetup.idawcms__Ida_Setup_Activation_Date__c}"/>
+                <apex:inputField value="{!idaClonedSetup.idawcms__Ida_Setup_Expiration_Date__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

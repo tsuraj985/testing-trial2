@@ -1,0 +1,35 @@
+<apex:page standardController="Account" extensions="DataTable">
+    <style>
+        body .bPageBlock .pbBody .dataCol{
+            width:100%;
+        } 
+    </style>
+    <apex:form >
+     <apex:pageblock id="pb1">
+         <apex:pageBlockButtons location="top">
+             <apex:commandButton action="{!onSave}" value="Save" id="save" reRender="pb1,pb2"/>
+             <apex:commandButton value="Cancel" action="{!cancel}"/>
+          </apex:pageBlockButtons> 
+          <apex:pageblocksection title="Account Information" >
+            <apex:inputfield value="{!accObj.AccountNumber}"/>
+            <apex:inputfield value="{!accObj.Name}"/>
+            <apex:inputField value="{!accObj.Site}"/>
+            <apex:inputField value="{!accObj.Rating}"/>
+            <apex:inputField value="{!accObj.Phone}"/>
+            <apex:inputField value="{!accObj.Website}"/>
+         </apex:pageblocksection>
+         </apex:pageblock>    
+        <apex:pageBlock id="pb2">
+         <apex:pageBlockSection title="Data List">
+          <apex:pageBlockTable value="{!accounts}" var="a" >
+              <apex:column value="{!a.AccountNumber}"/>
+              <apex:column value="{!a.Name}"/>
+              <apex:column value="{!a.Site}"/>
+              <apex:column value="{!a.Rating}"/>
+              <apex:column value="{!a.Phone}"/>
+              <apex:column value="{!a.Website}"/>
+          </apex:pageBlockTable>   
+         </apex:pageBlockSection>
+         </apex:pageBlock>    
+    </apex:form>
+</apex:page>

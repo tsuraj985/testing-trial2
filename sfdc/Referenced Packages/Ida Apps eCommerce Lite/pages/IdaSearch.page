@@ -1,0 +1,20 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:composition template="idawcms__IdaSiteTemplate">
+        <!-- Content Area -->
+        <apex:define name="body">
+            <div class="fs_contentarea">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="searchtable">
+                    <tr>
+                        <td width="130" style="padding-right:10px;" valign="top">
+                            <c:Ida_Filter_Sidebar linkUrl="{!$Page.idawcms__IdaSearch}"/>
+                        </td>
+                        <td valign="top">
+                            <c:Ida_Product_Panel />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </apex:define>
+        <!-- Content Area Ends -->
+    </apex:composition>
+</apex:page>

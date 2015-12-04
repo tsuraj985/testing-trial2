@@ -1,0 +1,52 @@
+<apex:page showHeader="false">
+
+  <script>
+      function changeColor(inputID){
+              var inputValue = document.getElementById(inputID).value;
+              return ( document.body.style.backgroundColor =[document.getElementById(inputID).value]); 
+      }
+      function focus(){
+              j$("[id$=loading-curtain-div]").css("background-color", "blue").css("opacity", 0.35);
+      }
+  </script>
+
+      <style>
+             .ash_gray{ background-color:#666362; color:white;  }
+      </style>
+
+     <apex:sectionHeader title="Color codes" subtitle="Pick Color">
+         </apex:sectionHeader>       
+        
+           <apex:pageBlock >
+               <apex:form id="myform" >
+                  <div id="loading-curtain-div"/>
+                     <apex:pageBlockSection columns="2" id="mypageblockSection">
+                         <apex:outputText value="Ash Gray:" style="font-size:15px;"/>
+                              <apex:commandButton id="cmd1" onclick="changeColor('{!$Component.cmd1}')" onmouseout="focus();"  reRender="myform" value="#666362" style="background:#666362;width:80px" />
+                         <apex:outputText value="Slate Bliue:" style="font-size:15px;"/>
+                              <apex:commandButton id="cmd2" onclick="changeColor('{!$Component.cmd2}')" reRender="myform" value="#737CA1" style="background:#737CA1;width:80px" />
+                         <apex:outputText value="Blue Jay:" style="font-size:15px;"/>
+                              <apex:commandButton id="cmd3" onclick="changeColor('{!$Component.cmd3}')" reRender="myform" value="#2B547E" style="background:#2B547E;width:80px"/>
+                         <apex:outputText value="Blue Hosta:" style="font-size:15px"/>
+                              <apex:commandButton id="cmd4" onclick="changeColor('{!$Component.cmd4}')" reRender="myform" value="#77BFC7" style="background:#77BFC7;width:80px"/>       
+                         <apex:outputText value="Light Sea Green:" style="font-size:15px "/>
+                              <apex:commandButton id="cmd5" onclick="changeColor('{!$Component.cmd5}')" reRender="myform" value="#3EA99F" style="background:#3EA99F; width:80px"/>
+                         <apex:outputText value="Dark Turquoise:" style="font-size:15px"/>
+                              <apex:commandButton id="cmd6" onclick="changeColor('{!$Component.cmd6}')" reRender="myform" value="#3B9C9C" style="background:#3B9C9C;width:80px"/>
+                         <apex:outputText value="Sea Turtle Green:" style="font-size:15px"/>
+                              <apex:commandButton id="cmd7" onclick="changeColor('{!$Component.cmd7}')" reRender="myform" value="#438D80" style="background:#438D80;width:80px"/>
+                         <apex:outputText value="Coffee:" style="font-size:15px;"/>
+                              <apex:commandButton id="cmd8" onclick="changeColor('{!$Component.cmd8}')" reRender="myform" value="#827B60" style="background:#827B60;width:80px"/>
+                         <apex:outputText value="Plum Purple:" style="font-size:15px"/>
+                              <apex:commandButton id="cmd9" onclick="changeColor('{!$Component.cmd9}')" reRender="myform" value="#6F4E37" style="background:#6F4E37;width:80px"/>
+                         <apex:outputText value="Plum Velvet:" style="font-size:15px"/>
+                              <apex:commandButton id="cmd10" onclick="changeColor('{!$Component.cmd10}')" reRender="myform" value="#7D0552" style="background:#7D0552;width:80px"/>
+                         <apex:outputText value="Army Brown:" style="font-size:15px"/>
+                               <apex:commandButton id="cmd11" onclick="changeColor('{!$Component.cmd11}')" reRender="myform" value="#5E5A80" style="background:#5E5A80;width:80px"/>
+                         <apex:outputText value="Plum Purple:" style="font-size:15px"/>
+                               <apex:commandButton id="cmd12" onclick="changeColor('{!$Component.cmd12}')" reRender="myform" value="#583759" style="background:#583759;width:80px"/> 
+             </apex:pageBlockSection>
+         </apex:form>
+    </apex:pageBlock> 
+  
+</apex:page>

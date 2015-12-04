@@ -1,0 +1,35 @@
+<apex:component controller="idawcms.Ida_General_Component_Controller">
+    <apex:attribute name="linkUrl" type="String" description="the url of the link page"/>
+    <script type="text/javascript">
+        function swapImage(imageUrl, totalLength) 
+        {
+            document.getElementById('imagearea').src = imageUrl;
+            for(var i = 0; i < totalLength; i++)
+            {
+                document.getElementById('leftnav'+i).className = '';
+            }
+        }
+    </script>
+    <div class="leftpanel">
+        <div class="title1">{!setupConfig.menuTitle}</div>
+        <div class="title2">{!setupConfig.menuSubtitle}</div>
+        <!--<div class="search">
+            <div style="float:left; width:168px">
+                <input name="search_zip" type="text" id="search_zip" onFocus="this.value=''" value="Enter Delivery Zip Code" />
+            </div>
+            <div style="float:right"><a href="#"><img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/leftpanel_searchbtn.gif')}" alt="Search" width="24" height="24" /></a></div>
+        </div>-->
+        <div class="leftnav">
+            <apex:variable value="{!0}" var="i"/>
+            <apex:repeat value="{!verticalMenus}" var="item">
+                <div>
+                    <a href="{!IF(AND(item.Link <> null, item.Link <> ''), item.Link, linkUrl&'?menuItem='&URLENCODE(item.Name))}" id="leftnav{!FLOOR(i)}" onmouseover="swapImage('{!item.Image}', {!verticalMenus.size});" onmouseout="this.className='active';" class="{!IF(i=0, 'active', '')}" title="{!item.ToolTip}">{!item.Name}</a>
+                </div>
+                <apex:variable value="{!i+1}" var="i"/>
+            </apex:repeat>
+        </div>     
+    </div>
+    <div class="rightpanel">
+        <img id="imagearea" src="{!defaultImage}" width="578" height="338" />
+    </div>
+</apex:component>

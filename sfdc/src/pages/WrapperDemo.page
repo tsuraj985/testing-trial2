@@ -1,0 +1,18 @@
+<apex:page controller="WrapperClassDemo">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1>
+  This is your new Page
+  <!-- End Default Content REMOVE THIS -->
+  <apex:form >
+      <table>
+          <apex:repeat value="{!wrapperListDemo}" var="aaa">
+             <tr> 
+             <td><apex:inputCheckbox value="{!aaa.isChecked}"/></td>
+             <td> {!aaa.account.name}</td>
+             </tr> 
+          </apex:repeat>
+      </table>
+      
+      <apex:commandButton value="Delete All Checked Accounts" action="{!deleteMyAccount}"/>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,35 @@
+<apex:page standardController="Case" extensions="newCase">
+    <style>
+        body .bPageBlock .pbBody .dataCol{
+            width:100%;
+        } 
+    </style>
+    <apex:form >
+     <apex:pageblock id="pb1">
+         <apex:pageBlockButtons location="top">
+             <apex:commandButton action="{!onSave}" value="Save" id="save" reRender="pb1,pb2"/>
+             <apex:commandButton value="Cancel" action="{!cancel}"/>
+          </apex:pageBlockButtons> 
+          <apex:pageblocksection title="Case Information" >
+            <apex:inputfield value="{!CaseObj.CaseNumber}"/>
+            
+            <apex:inputField value="{!CaseObj.Status}"/>
+            <apex:inputField value="{!CaseObj.Reason}"/>
+            
+            <apex:inputField value="{!CaseObj.Type}"/>
+         </apex:pageblocksection>
+         </apex:pageblock>    
+        <apex:pageBlock id="pb2">
+         <apex:pageBlockSection title="Data List">
+          <apex:pageBlockTable value="{!Cases}" var="c" >
+              <apex:column value="{!c.CaseNumber}"/>
+              
+              <apex:column value="{!c.Reason}"/>
+              <apex:column value="{!c.Status}"/>
+          
+              <apex:column value="{!c.Type}"/>
+          </apex:pageBlockTable>   
+         </apex:pageBlockSection>
+         </apex:pageBlock>    
+    </apex:form>
+</apex:page>

@@ -1,0 +1,11 @@
+<apex:page standardController="Account">
+<apex:pageBlock title="{!account.name}">
+<apex:outputPanel id="contactDetails">
+<apex:detail subject="{!$CurrentPage.parameters.cid}"
+relatedList="false" title="false"/>
+<apex:dataList value="{! account.Contacts}" var="contact">
+{! contact.Name}
+</apex:dataList>
+</apex:outputPanel>
+</apex:pageBlock>
+</apex:page>

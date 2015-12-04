@@ -1,0 +1,33 @@
+<apex:page controller="idawcms.Ida_Notification_Controller" showHeader="false" sidebar="false">
+  <apex:composition template="idawcms__IdaSiteTemplate">
+      <apex:define name="body">
+            <!-- Content Area --> 
+            <div class="fs_contentarea"> 
+                <div style="padding:30px 20px 30px 120px"> 
+                    <apex:outputPanel rendered="{!paymentCompleted}">
+                        <p>
+                            <strong>Thank you for your order.<br /> 
+                            We sent confirmation e-mail including the tracking # to: <a href="#">{!BillingEmail}</a></strong>
+                        </p>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!paymentInProgress}">
+                        <p>
+                            <strong>Thank you for your order, your order is in progress.<br /> 
+                            We will sent confirmation e-mail including the tracking # to: <a href="#">{!BillingEmail}</a></strong>
+                        </p>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!paymentFailed}">
+                        <strong>
+                            <p class="error"> Oops, something went wrong!<br /> 
+                            Please check your information and credit card number and re-submit your order.
+                            E-mail us at <a href="#">info@flower.com</a> or call us at xxx-xxx-xxxx</p>
+                        </strong>
+                    </apex:outputPanel>
+                </div> 
+            </div> 
+            <!-- Content Area Ends --> 
+      </apex:define>
+  </apex:composition>
+</apex:page>

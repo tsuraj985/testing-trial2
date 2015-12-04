@@ -1,0 +1,28 @@
+<apex:page standardController="Account">
+    <apex:sectionHeader title="Create Account"/>
+    <apex:form >
+        <apex:pageBlock title="Account Details">
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!save}" value="save" onclick="return confirmSave();"/>
+            <apex:commandButton action="{!cancel}" value="cancel" onclick="return confirmCancel();"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection columns="2">
+            <apex:inputField value="{!Account.Name}"/>
+            <apex:inputField value="{!Account.Phone}"/>
+            <apex:inputField value="{!Account.Rating}"/>
+            <apex:inputField value="{!Account.NumberOfEmployees}"/>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+        <script>
+            function confirmSave()
+            {
+                return confirm("Are you sure you want to save your changes?");
+            }
+            function confirmCancel()
+            {
+                return confirm("This will discard your changes\nAre you sure you wish to continue?");
+            }
+        
+        </script>
+    </apex:form>
+</apex:page>

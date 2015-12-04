@@ -1,0 +1,156 @@
+<apex:page controller="idawcms.Ida_Payment_Controller" showHeader="false" action="{!initPaymentMethods}">
+    <apex:composition template="idawcms__IdaSiteTemplate">
+        <apex:define name="body">
+            <!-- Content Area --> 
+            <div class="fs_contentarea" style="display: {!IF(ISNULL(errorMessage), 'block', 'none')}"> 
+                <div style="float:left; width:400px;">
+                    <apex:form >
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="generic_table"> 
+                            <tr>
+                                <th colspan="2">Payment</th> 
+                            </tr> 
+                            <tr> 
+                                <td colspan="2" align="center" valign="top">
+                                    <apex:variable value="{!0}" var="i" />
+                                    <apex:repeat value="{!paymentMethods}" var="item">
+                                        <label> 
+                                            <input type="radio" name="radio" value="{!item.Name}" id="method{!FLOOR(i)}" onclick="if(this.checked){displayButton(this.id)}"/> 
+                                            <img src="{!URLFOR($Resource.build_HTML, 'build_HTML/build-Default/images/')}{!item.Logo}" alt="{!item.Name}" width="100" height="40" align="absmiddle" />
+                                        </label>
+                                        <apex:variable value="{!i+1}" var="i" />
+                                    </apex:repeat> 
+                                </td> 
+                            </tr> 
+                            
+                            <apex:variable value="{!0}" var="i" />
+                            <apex:repeat value="{!paymentMethods}" var="item">
+                                <tr style="display: {!IF(i=0, 'block', 'none')}" id="method{!FLOOR(i)}_iframe">
+                                    <td colspan="2" align="right" valign="top" width="400px">
+                                        <iframe src="{!item.Src}" width="250px" height="100px" frameborder="0" scrolling="no" />
+                                    </td>
+                                </tr>
+                                <apex:variable value="{!i+1}" var="i" />
+                            </apex:repeat> 
+                             
+                            <tr style="display: {!IF(ISNULL(chargentPage), 'none', 'block')}"> 
+                                <td colspan="2" align="left" valign="top">
+                                    <label> 
+                                        <input type="radio" name="radio" value="Chargent Payment" /> 
+                                        <strong>Check out with Card</strong>
+                                    </label>
+                                </td> 
+                            </tr> 
+                        </table>
+                    </apex:form>  
+                    
+                    <iframe src="{!chargentPage}" width="450px" height="600px" frameborder="0" scrolling="no" style="display: {!IF(ISNULL(chargentPage), 'none', 'block')}" />
+                    
+                </div> 
+                <div style="float:right; width:360px"> 
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="order_details"> 
+                        <tr> 
+                            <th colspan="2">
+                                Your Order Total:&nbsp;
+                                <apex:outputText value="{0,number,$#,###,###.00}">    
+                                    <apex:param value="{!orderRequest.idawcms__Ida_Total_Amount__c}" />
+                                </apex:outputText>
+                            </th> 
+                        </tr> 
+                        
+                        <apex:repeat value="{!productsInfo}" var="item">
+                            <tr> 
+                                <td valign="top" style="border-top:1px solid #D5CAB0">
+                                    <img src="{!item.Image}" alt="" width="83" height="93" /><br /> 
+                                    <br /> 
+                                    <strong>{!item.ProductName} -<br /> 
+                                    {!item.UpgradeText}</strong>
+                                </td> 
+                                <td valign="top" style="border-top:1px solid #D5CAB0">
+                                    <strong>Delivery on:</strong><br /> 
+                                    <apex:outputText value="{0, Date, EEE, MMM dd, yyyy z}">
+                                        <apex:param value="{!item.ArrivalDate}" />
+                                    </apex:outputText>
+                                    <br /> 
+                                    <!--<strong>Delivered By:</strong><br /> 
+                                    Fed Ex? or UPS?<br /> 
+                                    <a href="#">Edit Delivery Info</a>-->
+                                </td>  
+                            </tr> 
+                            <tr> 
+                                <td align="right" valign="top" style="border-top:1px solid #D5CAB0">{!item.ProductName}<br /> - {!item.UpgradeText}:</td> 
+                                <td valign="bottom" style="border-top:1px solid #D5CAB0">
+                                    <apex:outputText value="{0,number,$#,###,###.00}">    
+                                        <apex:param value="{!item.Price}"/>
+                                    </apex:outputText>
+                                </td> 
+                            </tr>
+                            <!--<tr> 
+                                <td align="right" valign="top">Service Charge:</td> 
+                                <td valign="top">$0.00</td> 
+                            </tr> 
+                            <tr> 
+                                <td align="right" valign="top">Discount:</td> 
+                                <td valign="top">$0.00</td> 
+                            </tr>-->
+                        </apex:repeat>
+            
+                        <tr> 
+                            <td valign="bottom">
+                                <strong>Occasion:<br /> 
+                                </strong>{!orderRequest.Ida_Occasion__c}<br /> 
+                                <strong>Message &amp; Signature:<br /> 
+                                </strong>{!orderRequest.Ida_Message__c}
+                            </td> 
+                            <td valign="top">
+                                <strong>Delivered to:</strong><br /> 
+                                {!orderRequest.Ida_Shipping_First_Name__c} {!orderRequest.Ida_Shipping_Last_Name__c}<br /> 
+                                {!orderRequest.Ida_Shipping_Address_Line1__c}<br /> 
+                                {!orderRequest.Ida_Shipping_Address_Line2__c}<br />
+                                {!orderRequest.Ida_Shipping_City__c} {!orderRequest.Ida_Shipping_State__c},<br /> 
+                                {!orderRequest.Ida_Shipping_ZipCode__c}<br /> 
+                                {!orderRequest.Ida_Shipping_Country__c}<br /> 
+                                {!orderRequest.Ida_Shipping_Phone__c}
+                            </td>    
+                        </tr> 
+                        <tr> 
+                            <th align="right" style="border-top:1px solid #D5CAB0">Your Order Total: </th> 
+                            <th align="left" style="border-top:1px solid #D5CAB0">
+                                <apex:outputText value="{0,number,$#,###,###.00}">    
+                                    <apex:param value="{!orderRequest.idawcms__Ida_Total_Amount__c}" />
+                                </apex:outputText>
+                            </th> 
+                        </tr> 
+                    </table> 
+                </div> 
+                <br class="clearfloat" /> 
+            </div> 
+            
+            <div class="fs_contentarea"> 
+                <div style="padding:30px 20px 30px 120px"> 
+                    <apex:outputPanel rendered="{!NOT(ISNULL(errorMessage))}">
+                        <strong><p class="error">{!errorMessage}</p></strong>
+                    </apex:outputPanel>
+                </div> 
+            </div>
+            
+            <!-- Content Area Ends --> 
+        </apex:define>
+    </apex:composition>
+    
+    <script type="text/javascript">
+        if(document.getElementById("method0") != null)
+        {
+            document.getElementById("method0").checked = true;
+        }
+        
+        function displayButton(elementId)
+        {
+            for(var i = 0; i < {!paymentMethods.size}; i++)
+            {
+                document.getElementById("method" + i + "_iframe").style.display = "none";
+            }
+            var iframeId = elementId + "_iframe";
+            document.getElementById(iframeId).style.display = "block";
+        }
+    </script>
+</apex:page>

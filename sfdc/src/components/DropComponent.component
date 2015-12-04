@@ -1,0 +1,84 @@
+<apex:component controller="CalendarController" allowDML="true">
+	<style>
+		#dropTableId tr th{
+			text-align:center;
+			border-top:2px solid #000000;
+			border-left:2px solid #000000;
+		}
+		#dropTableId th:last-child {
+			border-right:2px solid #000000;
+		}
+		#dropTableId td{
+			text-align:center;
+			border-top:2px solid #000000;
+			border-left:2px solid #000000;
+		}
+		#dropTableId td:last-child {
+			border-right:2px solid #000000;
+		}
+		#dropTableId tr:last-child td {
+			border-bottom:2px solid #000000;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		function PopupCenterDual(url, title, w, h) {
+		    // Fixes dual-screen position   Most browsers   Firefox
+		    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+		    var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+		    width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+		    height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+		
+		    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+		    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+		    var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+		
+		    // Puts focus on the newWindow
+		    if (window.focus) {
+		        newWindow.focus();
+		    }
+		}
+</script>
+	
+	<apex:sectionHeader title="Drop">
+	<apex:form id="formID">
+	
+		<apex:pageblock title="Drop Edit">
+				<apex:outputPanel id="buttonsId">
+			  		<apex:commandButton action="{!createNewDrops}" title="New" value="Create New Drop" />
+			  	</apex:outputPanel>
+				<table id="dropTableId" width="100%">
+						<th>Action</th>
+						<th>Drop Date</th>
+						<th>Accounting Approval</th>
+						<th>Override</th>
+						<th>Completed</th>
+						<th>Drop Volume</th>
+						<th>Seeded Recived</th>
+					<apex:repeat value="{!dropList}" var="dropObj">
+						<tr>
+							<td>
+							<apex:variable var="xyz" value="/apex/DropEditPage?id={!dropObj.Id}" />
+							<apex:commandLink value="Edit" onclick="PopupCenterDual('{!xyz}','test','450','450')"/></td>
+							<td>
+								<apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+									<apex:param value="{!dropObj.Drop_Date__c}" /> 
+								</apex:outputText>
+							</td>
+							<td>12</td>
+							<td>22</td>
+							<td>33</td>
+							<td>{!dropObj.Drop_Volume__c}</td>
+							<td>
+								<apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+								    <apex:param value="{!dropObj.SeededRecieved__c}" /> 
+								</apex:outputText>
+							</td>
+						</tr>
+					</apex:repeat>
+				</table>
+			
+		</apex:pageblock>
+	</apex:form>
+	</apex:sectionHeader>
+</apex:component>

@@ -1,0 +1,16 @@
+<apex:page standardController="Opportunity" extensions="testButtonCG">
+<apex:form >
+<apex:pageBlock >
+   <apex:outputPanel id="test">
+   <apex:commandButton value="Test" rendered="{!testButton}"/>
+   </apex:outputPanel>
+      <apex:pageBlockSection columns="2">
+            <apex:inputField value="{!opportunity.Name}"/>
+            <apex:inputField value="{!opportunity.CloseDate}"/>
+            <apex:inputField value="{!opportunity.StageName}">
+            <apex:actionSupport event="onchange" action="{!Check}" rerender="test"/>
+            </apex:inputField>
+        </apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

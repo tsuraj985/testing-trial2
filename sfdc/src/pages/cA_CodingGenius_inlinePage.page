@@ -1,0 +1,11 @@
+<apex:page standardController="Opportunity" extensions="cA_CodingGenius_inlinePage">
+<apex:form >
+<apex:sectionHeader title="Opportunity Close Date"/>
+<apex:pageBlockSection title="opportunity close date">
+<apex:outputfield value="{!opportunity.CloseDate}"/>
+<apex:outputPanel rendered="flag">
+Opportunity Close Date is Near :-p
+</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:form>
+</apex:page>

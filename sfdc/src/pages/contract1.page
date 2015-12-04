@@ -1,0 +1,33 @@
+<apex:page standardController="Contract" extensions="datacont">
+    <style>
+        body .bPageBlock .pbBody .dataCol{
+            width:100%;
+        } 
+    </style>
+    <apex:form >
+     <apex:pageblock id="pb1">
+         <apex:pageBlockButtons location="top">
+             <apex:commandButton action="{!onSave}" value="Save" id="save" reRender="pb1,pb2"/>
+             <apex:commandButton value="Cancel" action="{!cancel}"/>
+          </apex:pageBlockButtons> 
+          <apex:pageblocksection title="Contract Information" >
+            <apex:inputfield value="{!contractObj.Status}"/>
+            <apex:inputfield value="{!contractObj.Name}"/>
+            <apex:inputField value="{!contractObj.StartDate}"/>
+            <apex:inputField value="{!contractObj.EndDate}"/>
+            <apex:inputField value="{!contractObj.Description}"/>
+         </apex:pageblocksection>
+         </apex:pageblock>    
+        <apex:pageBlock id="pb2">
+         <apex:pageBlockSection title="Data List">
+          <apex:pageBlockTable value="{!Contract}" var="s" >
+              <apex:column value="{!s.Status}"/>
+              <apex:column value="{!s.Name}"/>
+              <apex:column value="{!s.StartDate}"/>
+              <apex:column value="{!s.EndDate}"/>
+              <apex:column value="{!s.Description}"/>
+          </apex:pageBlockTable>   
+         </apex:pageBlockSection>
+         </apex:pageBlock>    
+    </apex:form>
+</apex:page>
